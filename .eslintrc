@@ -1,0 +1,30 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "sourceType": "module"
+  },
+  "extends": "es/node",
+  "rules": {
+    "quotes": ["warn", "double", { "allowTemplateLiterals": true }],
+    "dot-location": [2, "property"],
+    "id-length": "off",
+    "no-underscore-dangle": [ "error", {
+      "allowAfterThis": true,
+      "allowAfterThisConstructor": true
+    }],
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "kebabCase"
+      }
+    ],
+    "operator-linebreak": ["error", "before"],
+    "template-curly-spacing": [2, "always"]
+  }
+}
