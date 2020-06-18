@@ -4,12 +4,19 @@
     "node": true,
     "browser": true
   },
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": "tsconfig.json",
+    "tsconfigRootDir": ".",
     "parser": "babel-eslint",
     "sourceType": "module"
   },
-  "extends": "es/node",
+  "extends": [
+    "es/node",
+    "plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
   "rules": {
     "quotes": ["warn", "double", { "allowTemplateLiterals": true }],
     "dot-location": [2, "property"],
@@ -26,5 +33,8 @@
     ],
     "operator-linebreak": ["error", "before"],
     "template-curly-spacing": [2, "always"]
-  }
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ]
 }
