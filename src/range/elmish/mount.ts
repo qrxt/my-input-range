@@ -1,8 +1,15 @@
+// Interfaces
+import Model from "@interfaces/Model.interface";
+import Payload from "@interfaces/Payload.interface";
+
+// Enums
+import ActionsEnum from "@enums/ActionsEnum.enums";
+const { SetValue } = ActionsEnum;
+
+// Elmish
 import update from "./update";
 import view from "./view";
 
-import Model from "../ts/interfaces/Model.interface";
-import Payload from "../ts/interfaces/Payload.interface";
 import MyRange from "../range";
 
 export default (model: Model, range: MyRange): void => {
@@ -16,7 +23,7 @@ export default (model: Model, range: MyRange): void => {
   range.range.on("change", () => {
     const nextRangeValue = Number(range.range.val());
 
-    signal("SET_VALUE", {
+    signal(SetValue, {
       value: nextRangeValue
     });
   });

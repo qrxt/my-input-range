@@ -10,6 +10,8 @@ export default (model: Model, action: string, payload?: Payload): Model => {
 
   if (fittingAction) {
     return fittingAction(model, payload);
+  } else {
+    console.warn("Trying to invoke undefined action")
   }
 
   return model;

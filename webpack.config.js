@@ -54,7 +54,15 @@ module.exports = (_, options) => {
       extensions: [
         ".ts", ".js",
         ".css"
-      ]
+      ],
+
+      alias: {
+        "@": path.join(__dirname, "src"),
+
+        "@interfaces": path.join(__dirname, "src", "range", "ts", "interfaces"),
+        "@types": path.join(__dirname, "src", "range", "ts", "types"),
+        "@enums": path.join(__dirname, "src", "range", "ts", "enums"),
+      }
     },
 
     devServer: {
@@ -62,7 +70,7 @@ module.exports = (_, options) => {
       compress: isProd,
       hot: isDev,
       port: 3000,
-      host: "192.168.1.60"
+      host: "192.168.1.58"
     },
 
     devtool: "sourcemap",
