@@ -9,7 +9,7 @@
     "watch": "webpack-dev-server --mode development",
     "watch:open": "webpack-dev-server --mode development --open",
     "watch-prod": "webpack-dev-server --mode production",
-    "eslint": "eslint ./src/components"
+    "eslint": "eslint ./src"
   },
   "author": "qrx",
   "license": "ISC",
@@ -34,6 +34,7 @@
     "eslint": "^7.2.0",
     "eslint-config-es": "^3.19.61",
     "eslint-plugin-no-loops": "^0.3.0",
+    "eslint-plugin-sonarjs": "^0.5.0",
     "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",

@@ -8,14 +8,15 @@
   "parserOptions": {
     "project": "tsconfig.json",
     "tsconfigRootDir": ".",
-    "parser": "babel-eslint",
+    "parser": "@typescript-eslint/parser",
     "sourceType": "module"
   },
   "extends": [
-    "es/node",
+    // "es/node",
     "plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:sonarjs/recommended"
   ],
   "rules": {
     "quotes": ["warn", "double", { "allowTemplateLiterals": true }],
@@ -25,12 +26,12 @@
       "allowAfterThis": true,
       "allowAfterThisConstructor": true
     }],
-    "unicorn/filename-case": [
-      "error",
-      {
-        "case": "kebabCase"
-      }
-    ],
+    // "unicorn/filename-case": [
+    //   "error",
+    //   {
+    //     "case": "kebabCase"
+    //   }
+    // ],
     "operator-linebreak": ["error", "before"],
     "template-curly-spacing": [2, "always"]
   },
