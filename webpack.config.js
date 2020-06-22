@@ -59,9 +59,9 @@ module.exports = (_, options) => {
       alias: {
         "@": path.join(__dirname, "src"),
 
-        "@interfaces": path.join(__dirname, "src", "range", "ts", "interfaces"),
-        "@types": path.join(__dirname, "src", "range", "ts", "types"),
-        "@enums": path.join(__dirname, "src", "range", "ts", "enums"),
+        "@interfaces": path.resolve(__dirname, "src", "range", "ts", "interfaces"),
+        "@type": path.resolve(__dirname, "src", "range", "ts", "type"),
+        "@enums": path.resolve(__dirname, "src", "range", "ts", "enums"),
       }
     },
 
@@ -70,7 +70,7 @@ module.exports = (_, options) => {
       compress: isProd,
       hot: isDev,
       port: 3000,
-      host: "192.168.1.58"
+      host: "192.168.1.60"
     },
 
     devtool: "sourcemap",

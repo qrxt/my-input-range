@@ -1,8 +1,8 @@
 import setValue from "./set-value";
 
-import Action from  "../../ts/types/Action.type";
+import Action from  "@type/Action.type";
 
-import ActionsEnum from "../../ts/enums/ActionsEnum.enums";
+import ActionsEnum from "@enums/ActionsEnum.enums";
 
 const {
   SetValue

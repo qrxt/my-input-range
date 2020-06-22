@@ -9,10 +9,13 @@
     "noEmitOnError": true,
     "sourceMap": true,
     "paths": {
-      "@interfaces": ["./src/range/ts/interfaces"]
+      "@interfaces/*": ["./src/range/ts/interfaces/*"],
+      "@type/*": ["src/range/ts/type/*"],
+      "@enums/*": ["./src/range/ts/enums/*"]
     }
   },
   "include": [
-    "./src/**/*", "src/index.ts"
+    "./src/**/*",
+    "src/index.ts"
   ],
 }

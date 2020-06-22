@@ -4,6 +4,7 @@ import Payload from "@interfaces/Payload.interface";
 
 // Enums
 import ActionsEnum from "@enums/ActionsEnum.enums";
+
 const { SetValue } = ActionsEnum;
 
 // Elmish

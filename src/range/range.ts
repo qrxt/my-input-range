@@ -1,5 +1,5 @@
 import { mount } from "./elmish";
-import Model from "./ts/interfaces/Model.interface";
+import Model from "@interfaces/Model.interface";
 
 interface Options {
   value?: number
@@ -16,7 +16,7 @@ export default class MyRange {
     this.options = {
       value: 50,
 
-      ...this.options
+      ...options
     };
   }
 

@@ -4,6 +4,16 @@
     "node": true,
     "browser": true
   },
+  "settings": {
+    "import/resolver": {
+      "typescript": {},
+      "node": {
+        "extensions": [
+          ".ts"
+        ]
+      }
+    }
+  },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "tsconfig.json",
@@ -26,16 +36,11 @@
       "allowAfterThis": true,
       "allowAfterThisConstructor": true
     }],
-    // "unicorn/filename-case": [
-    //   "error",
-    //   {
-    //     "case": "kebabCase"
-    //   }
-    // ],
     "operator-linebreak": ["error", "before"],
     "template-curly-spacing": [2, "always"]
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "import"
   ]
 }

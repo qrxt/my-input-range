@@ -1,9 +1,9 @@
 import actions from "./actions";
 
-import Model from "../ts/interfaces/Model.interface";
-import Payload from "../ts/interfaces/Payload.interface";
+import Model from "@interfaces/Model.interface";
+import Payload from "@interfaces/Payload.interface";
 
-import Action from "../ts/types/Action.type";
+import Action from "@type/Action.type";
 
 export default (model: Model, action: string, payload?: Payload): Model => {
   const fittingAction: Action | undefined = actions[action];
