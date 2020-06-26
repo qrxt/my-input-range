@@ -2,6 +2,8 @@ import * as $ from "jquery";
 
 import Range from "./range";
 
+import "./page.css";
+
 const rangeElem = $(".range-example");
 
 if (rangeElem.length > 0) {

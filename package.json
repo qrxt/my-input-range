@@ -31,6 +31,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.6.0",
     "eslint": "^7.2.0",
     "eslint-config-es": "^3.19.61",
     "eslint-import-resolver-typescript": "^2.0.0",

@@ -1,0 +1,42 @@
+/* Border Box Set */
+
+.range *,
+.range *::before,
+.range *::after {
+  box-sizing: border-box;
+}
+
+/* Range Container */
+
+.range {
+  width: 100%;
+}
+
+/* Range Base */
+
+.range__base {
+  width: 100%;
+  height: 10px;
+  position: relative;
+
+  background-color: transparent;
+
+  border: 1px solid rgb(128, 128, 128);
+  border-radius: 5px;
+}
+
+/* Range Handle */
+
+.range__handle {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  left: -1px;
+  top: -3.5px;
+
+  background-color: rgb(62, 140, 230);
+
+  border-radius: 50%;
+
+  cursor: pointer;
+}
