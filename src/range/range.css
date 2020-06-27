@@ -28,11 +28,11 @@
 /* Range Handle */
 
 .range__handle {
-  width: 10px;
-  height: 15px;
+  width: 15px;
+  height: 25px;
   position: absolute;
   left: 0px;
-  top: -3.5px;
+  top: -8px;
 
   background-color: rgba(62, 140, 230, 0.4);
 
