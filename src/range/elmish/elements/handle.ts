@@ -1,34 +1,61 @@
-import "./div";
 // Interfaces
 
 import Props from "@interfaces/Props.interface";
+import Payload from "@interfaces/Payload.interface";
+
+// Enums
+
+import ActionsEnum from "@enums/ActionsEnum.enums";
+
+const { SetValue } = ActionsEnum;
 
 // Elements
 
 import div from "./div";
 
-const moveAt = (elem: JQuery<HTMLElement>, evt: JQuery.Event): void => {
-  evt.preventDefault();
+const getPageX = (evt: JQuery.Event): number => {
+  const isMouseEvt = evt.type === "mousemove";
+  const isTouchEvt = evt.type === "touchmove";
 
-  const leftBoundaryX = elem.parent().offset().left;
-  const rightBoundaryX = elem.parent().width() + leftBoundaryX;
-
-  const pageX = evt.pageX || evt.touches[0].pageX;
-
-  if (pageX >= leftBoundaryX && pageX <= rightBoundaryX) {
-    elem.css({
-      left: (pageX) - (elem.get(0).offsetWidth / 2 + 10)
-    });
+  if (isMouseEvt) {
+    return evt.pageX;
   }
 
-  // evt.touches[0].pageX
+  if (isTouchEvt) {
+    return evt.touches[0].pageX
+  }
+}
+
+const moveAt = (elem: JQuery<HTMLElement>, evt: JQuery.Event): void => {
+  const cursorX = getPageX(evt)
+
+  const elemLeftBoundaryX = cursorX - elem.width() / 2;
+  const elemRightBoundaryX = elemLeftBoundaryX + elem.width();
+
+  const elemParentLeftBoundaryX = elem.parent().offset().left;
+  const elemParentRightBoundaryX = elemParentLeftBoundaryX + elem.parent().width() + 1;
+
+  console.log(
+    `cursorX: ${ cursorX }`, "\n",
+    `elem left: ${ elem.offset().left }`
+  )
+
+  const elemInBoundaries = () =>
+    elemLeftBoundaryX >= elemParentLeftBoundaryX
+    && elemRightBoundaryX <= elemParentRightBoundaryX;
+
+  if (elemInBoundaries()) {
+    elem.css({
+      left: cursorX - (elemParentLeftBoundaryX + elem.width() / 2)
+    });
+  }
 };
 
 export default (props: Props): JQuery<HTMLElement> => {
+  const { signal } = props;
+
   const handle = div(
-    {
-      ...props
-    },
+    props,
     null
   );
 
@@ -37,10 +64,6 @@ export default (props: Props): JQuery<HTMLElement> => {
   };
 
   const onDocumentMouseUp = () => {
-    handle.css({
-      zIndex: 0
-    });
-
     // Action
 
     $(document).off("mousemove.range.handle touchmove.range.handle");
@@ -70,12 +93,6 @@ export default (props: Props): JQuery<HTMLElement> => {
   handle.on("mousedown.range.handle touchstart.range.handle", (evt: JQuery.Event) => {
     evt.stopPropagation();
 
-    console.log("touch start")
-
-    handle.css({
-      zIndex: 9999
-    });
-
     type CustomJQueryEventListener = (
       type: string,
       listener: (event: JQuery.Event) => void,
@@ -84,8 +101,7 @@ export default (props: Props): JQuery<HTMLElement> => {
 
     $(document).on(
       "mousemove.range.handle touchmove.range.handle",
-      onDocumentMouseMove,
-      { passive: false }
+      onDocumentMouseMove
     );
 
     $(document).on("mouseup.range.handle touchend.range.handle", onDocumentMouseUp);

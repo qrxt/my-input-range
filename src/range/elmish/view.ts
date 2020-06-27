@@ -1,6 +1,7 @@
 // Interfaces
 
 import Model from "@interfaces/Model.interface";
+import Payload from "@interfaces/Payload.interface";
 
 // Enums
 
@@ -15,7 +16,7 @@ const empty = (node: JQuery<HTMLElement>): void => {
   node.children().remove();
 };
 
-export default (model: Model, root: JQuery<HTMLElement>): void => {
+export default (signal: (action: string, payload: Payload) => void, model: Model, root: JQuery<HTMLElement>): void => {
   empty(root);
 
   root.append(
@@ -24,7 +25,8 @@ export default (model: Model, root: JQuery<HTMLElement>): void => {
       div(
         { className: "range__base" },
         handle({
-          className: "range__handle range__handle--lower"
+          className: "range__handle range__handle--lower",
+          signal: signal
         })
       )
     )

@@ -18,7 +18,7 @@ export default (model: Model, range: MyRange): void => {
     model = update(model, action, payload); // mut
     range.value = model.value;
 
-    view(model, range.node);
+    view(signal, model, range.node);
   };
 
   range.range.on("change", () => {
@@ -29,5 +29,5 @@ export default (model: Model, range: MyRange): void => {
     });
   });
 
-  view(model, range.node);
+  view(signal, model, range.node);
 };
