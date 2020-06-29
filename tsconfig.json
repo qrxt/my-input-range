@@ -11,7 +11,10 @@
     "paths": {
       "@interfaces/*": ["./src/range/ts/interfaces/*"],
       "@type/*": ["src/range/ts/type/*"],
-      "@enums/*": ["./src/range/ts/enums/*"]
+      "@enums/*": ["./src/range/ts/enums/*"],
+
+      "@elements/*": ["./src/range/elements/*"],
+      "@utils/*": ["./src/range/utils/*"],
     }
   },
   "include": [

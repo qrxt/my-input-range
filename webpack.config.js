@@ -62,6 +62,9 @@ module.exports = (_, options) => {
         "@interfaces": path.resolve(__dirname, "src", "range", "ts", "interfaces"),
         "@type": path.resolve(__dirname, "src", "range", "ts", "type"),
         "@enums": path.resolve(__dirname, "src", "range", "ts", "enums"),
+
+        "@elements": path.resolve(__dirname, "src", "range", "elements"),
+        "@utils": path.resolve(__dirname, "src", "range", "utils")
       }
     },
 

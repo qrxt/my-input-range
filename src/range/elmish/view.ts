@@ -3,14 +3,11 @@
 import Model from "@interfaces/Model.interface";
 import Payload from "@interfaces/Payload.interface";
 
-// Enums
-
-import ActionsEnum from "@enums/ActionsEnum.enums";
-
 // Elements
 
-import div from "./elements/div";
-import handle from "./elements/handle";
+import div from "@elements/div";
+import base from "@elements/base";
+import handle from "@elements/handle";
 
 const empty = (node: JQuery<HTMLElement>): void => {
   node.children().remove();
@@ -22,11 +19,17 @@ export default (signal: (action: string, payload: Payload) => void, model: Model
   root.append(
     div(
       { className: "range" },
-      div(
-        { className: "range__base" },
+      base(
+        {
+          className: "range__base",
+
+          percent: model.percent
+        },
         handle({
           className: "range__handle range__handle--lower",
-          signal: signal
+          signal: signal,
+
+          pos: model.value
         })
       )
     )
