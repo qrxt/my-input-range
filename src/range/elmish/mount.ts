@@ -13,8 +13,6 @@ export default (model: Model, range: MyRange): void => {
 
     model = update(model, action, payload); // mut
 
-    console.log(model);
-
     range.value = model.value;
 
     view(signal, model, range.node);

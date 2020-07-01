@@ -6,7 +6,7 @@ import HandleProps from "@interfaces/HandleProps.interface";
 
 import ActionsEnum from "@enums/ActionsEnum.enums";
 
-const { SetValue, SetModel } = ActionsEnum;
+const { SetModel } = ActionsEnum;
 
 // Elements
 
@@ -15,25 +15,12 @@ import div from "@elements/div";
 // Utils
 
 import moveHandleAt from "@utils/moveHandleAt";
-
-const setBaseGradient = (handle: { elem: JQuery<HTMLElement>, pos: number }, parent: JQuery<HTMLElement>, color: string) => {
-  const { elem: handleElem, pos } = handle;
-  const value = (pos + handleElem.width() / 2) / parent.width();
-  const percent = value * 100;
-
-  // ! check if more than 1 handle
-  handleElem
-    .parent()
-    .css({
-      background: `-webkit-gradient(linear, left top, right top,
-        color-stop(${ percent }%, ${ color }),
-        color-stop(${ percent }%, transparent)
-        )`,
-    });
-}
+import calcPercentage from "@utils/calcPercentage";
+import setBgGradient from "@utils/setBgGradient";
+import getPageX from "@utils/getPageX";
 
 export default (props: HandleProps): JQuery<HTMLElement> => {
-  const { signal, pos } = props;
+  const { signal, pos, colors } = props;
 
   const handle = div(
     props,
@@ -47,22 +34,43 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
     }
 
     // Gradient on move
-    setBaseGradient(
-      { elem: handle, pos: handle.position().left },
+    setBgGradient(
       handle.parent(),
-      "#ff0000"
+      colors,
+      calcPercentage(
+        handle.position().left + handle.width() / 2,
+        handle.parent().width()
+      )
     );
 
     moveHandleAt(handle, evt)
   };
 
   const onHandleStop = (evt: JQuery.Event, target: JQuery<HTMLElement>) => {
-    signal(SetModel, {
-      value: target.position().left,
-      percent: (
-        (target.position().left + target.width() / 2) / target.parent().width()
-      ) * 100
-    });
+    const isHandleOnRightBoundary = () =>
+      Math.ceil(target.position().left + target.width()) === Math.ceil(target.parent().width())
+
+      const isHandleOnLeftBoundary = () =>
+      target.position().left <= 0;
+
+    if (isHandleOnLeftBoundary()) {
+      signal(SetModel, {
+        value: target.position().left,
+        percent: 0
+      });
+    } else if (isHandleOnRightBoundary()) {
+      signal(SetModel, {
+        value: target.position().left,
+        percent: 100
+      });
+    } else {
+      signal(SetModel, {
+        value: target.position().left,
+        percent: (
+          (target.position().left + target.width() / 2) / target.parent().width()
+        ) * 100
+      });
+    }
 
     $(document).off("mousemove.range.handle touchmove.range.handle");
     $(document).off("mouseup.range.handle touchend.range.handle");
@@ -84,10 +92,13 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
     );
 
     // Gradient on press
-    setBaseGradient(
-      { elem: handle, pos: handle.position().left },
+    setBgGradient(
       handle.parent(),
-      "#ff0000"
+      colors,
+      calcPercentage(
+        pos + handle.width() / 2,
+        handle.parent().width()
+      )
     );
   });
 
@@ -96,10 +107,14 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
   });
 
   $(document).ready(() => {
-    setBaseGradient(
-      { elem: handle, pos: handle.position().left },
+    // Gradient on page load
+    setBgGradient(
       handle.parent(),
-      "#ff0000"
+      colors,
+      calcPercentage(
+        pos + handle.width() / 2,
+        handle.parent().width()
+      )
     );
   })
 

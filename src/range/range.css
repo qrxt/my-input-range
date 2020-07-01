@@ -19,7 +19,9 @@
   height: 10px;
   position: relative;
 
-  background-color: transparent;
+  /* background-color: transparent; */
+
+  background: linear-gradient(117deg,#0d064c 0,#740887 100%);
 
   border: 1px solid rgb(128, 128, 128);
   border-radius: 5px;
@@ -34,7 +36,7 @@
   left: 0px;
   top: -8px;
 
-  background-color: rgba(62, 140, 230, 0.4);
+  background-color: rgb(62, 140, 230);
 
   border-radius: 10%;
 

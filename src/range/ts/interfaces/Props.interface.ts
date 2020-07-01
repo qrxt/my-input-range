@@ -1,8 +1,11 @@
 import Payload from "@interfaces/Payload.interface";
 
 export default interface Props {
+  signal?: (action: string, payload: Payload) => void
+
   className?: string
 
-  signal?: (action: string, payload: Payload) => void
-  percent?: number
+  percent?: number,
+
+  colors?: Array<string>
 }

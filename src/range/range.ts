@@ -1,9 +1,9 @@
 import { mount } from "./elmish";
 import Model from "@interfaces/Model.interface";
 
-interface Options {
-  value?: number
-}
+// Interfaces
+
+import Options from "@interfaces/Options.interface";
 
 export default class MyRange {
   node: JQuery<HTMLElement>;
@@ -14,7 +14,8 @@ export default class MyRange {
     this.node = node;
     this.range = this.node.find("input[type='range']")
     this.options = {
-      value: 50,
+      value: 0,
+      colors: null,
 
       ...options
     };
@@ -30,10 +31,10 @@ export default class MyRange {
 
   init (): void {
     const model: Model = {
-      value: this.value
-    };
+      value: this.value,
 
-    this.range.val(this.options.value);
+      colors: this.options.colors
+    };
 
     mount(model, this);
   }

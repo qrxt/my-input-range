@@ -22,6 +22,7 @@ export default (signal: (action: string, payload: Payload) => void, model: Model
       base(
         {
           className: "range__base",
+          colors: model.colors,
 
           percent: model.percent
         },
@@ -29,7 +30,9 @@ export default (signal: (action: string, payload: Payload) => void, model: Model
           className: "range__handle range__handle--lower",
           signal: signal,
 
-          pos: model.value
+          pos: model.value,
+
+          colors: model.colors,
         })
       )
     )
