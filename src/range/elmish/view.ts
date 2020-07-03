@@ -7,7 +7,7 @@ import Payload from "@interfaces/Payload.interface";
 
 import div from "@elements/div";
 import base from "@elements/base";
-import handle from "@elements/handle";
+import Handle from "@elements/handle";
 
 const empty = (node: JQuery<HTMLElement>): void => {
   node.children().remove();
@@ -15,6 +15,20 @@ const empty = (node: JQuery<HTMLElement>): void => {
 
 export default (signal: (action: string, payload?: Payload, rerender?: boolean) => void, model: Model, root: JQuery<HTMLElement>): void => {
   empty(root);
+
+  const handle = new Handle({
+    className: "range__handle range__handle--lower",
+    signal: signal,
+
+    min: model.min,
+    max: model.max,
+    pos: model.value,
+
+    handleWidth: model.handleWidth,
+    baseWidth: model.baseWidth,
+
+    colors: model.colors,
+  });
 
   root.append(
     div(
@@ -26,19 +40,7 @@ export default (signal: (action: string, payload?: Payload, rerender?: boolean) 
 
           percent: model.percent
         },
-        handle({
-          className: "range__handle range__handle--lower",
-          signal: signal,
-
-          min: model.min,
-          max: model.max,
-          pos: model.value,
-
-          handleWidth: model.handleWidth,
-          baseWidth: model.baseWidth,
-
-          colors: model.colors,
-        })
+        handle.init()
       )
     )
   );

@@ -17,28 +17,27 @@ import div from "@elements/div";
 import moveHandleAt from "@utils/moveHandleAt";
 import calcPercentage from "@utils/calcPercentage";
 import setBgGradient from "@utils/setBgGradient";
-import getPageX from "@utils/getPageX";
 
-export default (props: HandleProps): JQuery<HTMLElement> => {
-  const {
-    signal,
+// !!!!!!!!!!!!!
 
-    pos,
-    min,
-    max,
+const normalizePos = (unitWidth: number, value: number): number =>
+  Math.ceil(value / unitWidth);
 
-    colors,
+// !!!!!!!!!!!!
 
-    handleWidth,
-    baseWidth
-  } = props;
+export default class Handle {
+  props: HandleProps
+  handle: JQuery<HTMLElement>
 
-  const handle = div(
-    props,
-    null
-  );
+  constructor (props: HandleProps) {
+    this.props = props;
+    this.handle = div(
+      props,
+      null
+    );
+  }
 
-  const onHandleMove = (evt: JQuery.Event) => {
+  _onMove (evt: JQuery.Event): void {
     if (evt.type === "mousemove") {
       evt.preventDefault();
       evt.stopPropagation();
@@ -46,125 +45,146 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
 
     // Gradient on move
     setBgGradient(
-      handle.parent(),
-      colors,
+      this.handle.parent(),
+      this.props.colors,
       calcPercentage(
-        handle.position().left + handle.width() / 2,
-        handle.parent().width()
+        this.handle.position().left + this.handle.width() / 2,
+        this.handle.parent().width()
       )
     );
 
-    moveHandleAt(handle, evt);
+    moveHandleAt(this.handle, evt);
+  }
 
+  _onStop (): void {
+    const { signal, min, max } = this.props;
 
-  };
-
-  // !move
-  const normalizePos = (unitWidth: number, value: number): number =>
-    Math.ceil(value / unitWidth);
-  //
-
-  const onHandleStop = (evt: JQuery.Event, target: JQuery<HTMLElement>) => {
     const isHandleOnRightBoundary = () =>
-      Math.ceil(target.position().left + target.width()) === Math.ceil(target.parent().width())
+      Math.ceil(this.handle.position().left + this.handle.width()) === Math.ceil(this.handle.parent().width())
 
-    const isHandleOnLeftBoundary = () =>
-      target.position().left <= 0;
+      const isHandleOnLeftBoundary = () =>
+        this.handle.position().left <= 0;
 
-    if (isHandleOnLeftBoundary()) {
-      signal(SetModel, {
-        value: min,
-        percent: 0
-      });
-    } else if (isHandleOnRightBoundary()) {
-      signal(SetModel, {
-        value: max,
-        percent: 100
-      });
-    } else {
-      signal(SetModel, {
-        value: normalizePos(
-          target.parent().width() / max,
-          target.position().left
-        ),
-        percent: (
-          (target.position().left + target.width() / 2) / target.parent().width()
-        ) * 100
-      });
-    }
+      if (isHandleOnLeftBoundary()) {
+        signal(SetModel, {
+          value: min,
+          percent: 0
+        });
+      } else if (isHandleOnRightBoundary()) {
+        signal(SetModel, {
+          value: max,
+          percent: 100
+        });
+      } else {
+        signal(SetModel, {
+          value: normalizePos(
+            this.handle.parent().width() / max,
+            this.handle.position().left
+          ),
+          percent: (
+            (this.handle.position().left + this.handle.width() / 2) / this.handle.parent().width()
+          ) * 100
+        });
+      }
 
-    $(document).off("mousemove.range.handle touchmove.range.handle");
-    $(document).off("mouseup.range.handle touchend.range.handle");
-  };
+      $(document).off("mousemove.range.handle touchmove.range.handle");
+      $(document).off("mouseup.range.handle touchend.range.handle");
+  }
 
-  // Attach Listeners
+  _onPress (evt: JQuery.Event): void {
+    const { colors, max, pos } = this.props;
+    const { _onMove, _onStop } = this;
 
-  handle.on("mousedown.range.handle touchstart.range.handle", (evt: JQuery.Event) => {
     evt.stopPropagation();
 
     $(document).on(
       "mousemove.range.handle touchmove.range.handle",
-      onHandleMove
+      _onMove.bind(this)
     );
 
     $(document).on(
       "mouseup.range.handle touchend.range.handle",
-      evt => onHandleStop(evt, handle)
+      _onStop.bind(this)
     );
 
     // Gradient on press
     setBgGradient(
-      handle.parent(),
+      this.handle.parent(),
       colors,
       calcPercentage(
-        (pos * handle.parent().width() / max) + handle.width() / 2,
-        handle.parent().width()
+        (pos * this.handle.parent().width() / max) + this.handle.width() / 2,
+        this.handle.parent().width()
       )
     );
-  });
+  }
 
-  handle.on("dragstart.range.handle", () => {
-    return false;
-  });
-
-  $(document).ready(() => {
-    const unitWidth = handle.parent().width() / max;
+  _onPageReady (): void {
+    const { signal, colors, max, pos, baseWidth } = this.props;
+    const unitWidth = this.handle.parent().width() / max;
 
     // Gradient on page load
     setBgGradient(
-      handle.parent(),
+      this.handle.parent(),
       colors,
       calcPercentage(
-        pos * unitWidth + handle.width() / 2,
-        handle.parent().width()
+        pos * unitWidth + this.handle.width() / 2,
+        this.handle.parent().width()
       )
     );
 
     if (!baseWidth) {
-      handle.css({
+      this.handle.css({
         left: pos * unitWidth
       });
 
       signal(SetModel, {
-        handleWidth: handle.width(),
-        baseWidth: handle.parent().width(),
+        handleWidth: this.handle.width(),
+        baseWidth: this.handle.parent().width(),
       }, false);
     }
-  })
-
-  // Preinit
-
-  if (pos === max) {
-    handle.css({
-      left: (pos * (baseWidth / max)) - handleWidth
-    });
-  } else {
-    handle.css({
-      left: pos * (baseWidth / max)
-    });
   }
 
-  handle.attr("tabindex", 0);
+  _onDragStart (): boolean {
+    return false;
+  }
 
-  return handle;
+  _preinit(): void {
+    const { pos, max, handleWidth, baseWidth } = this.props;
+
+    if (pos === max) {
+      this.handle.css({
+        left: (pos * (baseWidth / max)) - handleWidth
+      });
+    } else {
+      this.handle.css({
+        left: pos * (baseWidth / max)
+      });
+    }
+
+    this.handle.attr("tabindex", 0);
+  }
+
+  init (): JQuery<HTMLElement> {
+    const {
+      _onPageReady,
+      _onDragStart,
+      _onPress
+    } = this;
+
+    this._preinit();
+
+    $(document).ready(_onPageReady.bind(this));
+
+    this.handle.on(
+      "dragstart.range.handle",
+      _onDragStart.bind(this)
+    );
+
+    this.handle.on(
+      "mousedown.range.handle touchstart.range.handle",
+      _onPress.bind(this)
+    );
+
+    return this.handle;
+  }
 }
