@@ -14,7 +14,10 @@ export default class MyRange {
     this.node = node;
     this.range = this.node.find("input[type='range']")
     this.options = {
-      value: 0,
+      min: 0,
+      max: 10,
+      value: 5,
+
       colors: null,
 
       ...options
@@ -32,6 +35,11 @@ export default class MyRange {
   init (): void {
     const model: Model = {
       value: this.value,
+      min: this.options.min,
+      max: this.options.max,
+
+      baseWidth: null,
+      handleWidth: null,
 
       colors: this.options.colors
     };

@@ -6,5 +6,8 @@ export default interface Model {
   max?: number,
   step?: number,
 
+  handleWidth: number | null,
+  baseWidth: number | null,
+
   colors?: Array<string>
 }

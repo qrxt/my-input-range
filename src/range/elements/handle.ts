@@ -20,7 +20,18 @@ import setBgGradient from "@utils/setBgGradient";
 import getPageX from "@utils/getPageX";
 
 export default (props: HandleProps): JQuery<HTMLElement> => {
-  const { signal, pos, colors } = props;
+  const {
+    signal,
+
+    pos,
+    min,
+    max,
+
+    colors,
+
+    handleWidth,
+    baseWidth
+  } = props;
 
   const handle = div(
     props,
@@ -43,29 +54,39 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
       )
     );
 
-    moveHandleAt(handle, evt)
+    moveHandleAt(handle, evt);
+
+
   };
+
+  // !move
+  const normalizePos = (unitWidth: number, value: number): number =>
+    Math.ceil(value / unitWidth);
+  //
 
   const onHandleStop = (evt: JQuery.Event, target: JQuery<HTMLElement>) => {
     const isHandleOnRightBoundary = () =>
       Math.ceil(target.position().left + target.width()) === Math.ceil(target.parent().width())
 
-      const isHandleOnLeftBoundary = () =>
+    const isHandleOnLeftBoundary = () =>
       target.position().left <= 0;
 
     if (isHandleOnLeftBoundary()) {
       signal(SetModel, {
-        value: target.position().left,
+        value: min,
         percent: 0
       });
     } else if (isHandleOnRightBoundary()) {
       signal(SetModel, {
-        value: target.position().left,
+        value: max,
         percent: 100
       });
     } else {
       signal(SetModel, {
-        value: target.position().left,
+        value: normalizePos(
+          target.parent().width() / max,
+          target.position().left
+        ),
         percent: (
           (target.position().left + target.width() / 2) / target.parent().width()
         ) * 100
@@ -96,7 +117,7 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
       handle.parent(),
       colors,
       calcPercentage(
-        pos + handle.width() / 2,
+        (pos * handle.parent().width() / max) + handle.width() / 2,
         handle.parent().width()
       )
     );
@@ -107,23 +128,43 @@ export default (props: HandleProps): JQuery<HTMLElement> => {
   });
 
   $(document).ready(() => {
+    const unitWidth = handle.parent().width() / max;
+
     // Gradient on page load
     setBgGradient(
       handle.parent(),
       colors,
       calcPercentage(
-        pos + handle.width() / 2,
+        pos * unitWidth + handle.width() / 2,
         handle.parent().width()
       )
     );
+
+    if (!baseWidth) {
+      handle.css({
+        left: pos * unitWidth
+      });
+
+      signal(SetModel, {
+        handleWidth: handle.width(),
+        baseWidth: handle.parent().width(),
+      }, false);
+    }
   })
 
   // Preinit
-  handle.attr("tabindex", 0);
 
-  handle.css({
-    left: pos
-  });
+  if (pos === max) {
+    handle.css({
+      left: (pos * (baseWidth / max)) - handleWidth
+    });
+  } else {
+    handle.css({
+      left: pos * (baseWidth / max)
+    });
+  }
+
+  handle.attr("tabindex", 0);
 
   return handle;
 }

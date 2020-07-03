@@ -9,13 +9,16 @@ import view from "./view";
 import MyRange from "../range";
 
 export default (model: Model, range: MyRange): void => {
-  const signal = (action: string, payload?: Payload) => {
-
+  const signal = (action: string, payload?: Payload, rerender = true): void => {
     model = update(model, action, payload); // mut
+
+    console.log(model);
 
     range.value = model.value;
 
-    view(signal, model, range.node);
+    if (rerender) {
+      view(signal, model, range.node);
+    }
   };
 
   view(signal, model, range.node);
