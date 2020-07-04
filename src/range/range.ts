@@ -16,6 +16,7 @@ export default class MyRange {
     this.options = {
       min: 0,
       max: 10,
+      step: 1,
       value: 5,
 
       colors: null,
@@ -37,6 +38,7 @@ export default class MyRange {
       value: this.value,
       min: this.options.min,
       max: this.options.max,
+      step: this.options.step,
 
       baseWidth: null,
       handleWidth: null,

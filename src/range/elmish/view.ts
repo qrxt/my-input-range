@@ -23,6 +23,7 @@ export default (signal: (action: string, payload?: Payload, rerender?: boolean) 
     min: model.min,
     max: model.max,
     pos: model.value,
+    step: model.step,
 
     handleWidth: model.handleWidth,
     baseWidth: model.baseWidth,

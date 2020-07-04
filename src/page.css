@@ -2,6 +2,10 @@
   padding-left: 60px;
 }
 
+.page input[type="range"] {
+  width: 20%;
+}
+
 .page__range {
   width: 20%;
 }

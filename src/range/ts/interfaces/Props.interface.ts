@@ -7,5 +7,7 @@ export default interface Props {
 
   percent?: number,
 
+  step?: number,
+
   colors?: Array<string>
 }
