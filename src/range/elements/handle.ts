@@ -47,21 +47,31 @@ export default class Handle {
     );
   }
 
+  private _getMousePositionInside (evt: JQuery.Event): number {
+    return getPageX(evt) - this.handle.parent().offset().left;
+  }
+
   private _getPosMap (): Array<number> {
     const { min, max, step, baseWidth } = this.props;
 
     const posSteps = Array.from(Array(max / step), (_, current) => current + min + step);
 
     return posSteps
+      .concat(0)
       .map(
-        current => Math.floor(current * baseWidth / (max / step))
+        current => {
+          const stepCoord = current * baseWidth / (max / step);
+
+          return stepCoord === baseWidth
+            ? stepCoord - this.handle.width()
+            : Math.floor(stepCoord)
+        }
       );
   }
 
   private _onMove (evt: JQuery.Event): void {
-    const { pos, baseWidth, min, max, step } = this.props;
-    const closest = findClosestInArray(this._getPosMap(), this.pos)
-    const lastClosest = Math.floor(pos * baseWidth / (max / step));
+    const stepsMap = this._getPosMap();
+    const closest = findClosestInArray(stepsMap, this._getMousePositionInside(evt));
 
     if (evt.type === "mousemove") {
       evt.preventDefault();
@@ -78,9 +88,9 @@ export default class Handle {
       )
     );
 
-    // moveHandleAt(this.handle, evt); // !
+    // moveHandleAt(this.handle, evt); // ? if stepless
 
-    if (Math.abs(this.pos - closest) > 10 && closest !== lastClosest) {
+    if ((Math.abs(this._getMousePositionInside(evt) - closest)) >= 5) {
       this.moveTo(closest);
     }
   }
