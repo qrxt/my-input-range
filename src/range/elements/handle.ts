@@ -22,6 +22,8 @@ import moveHandleAt from "@utils/moveHandleAt";
 import calcPercentage from "@utils/calcPercentage";
 import setBgGradient from "@utils/setBgGradient";
 import getPageX from "@utils/getPageX";
+import { ftruncate } from "fs";
+import { map } from "jquery";
 
 // !!!!!!!!!!!!!
 
@@ -51,27 +53,42 @@ export default class Handle {
     return getPageX(evt) - this.handle.parent().offset().left;
   }
 
-  private _getPosMap (): Array<number> {
-    const { min, max, step, baseWidth } = this.props;
+  private _getStepIndexes (): Array<number> {
+    const { min, max } = this.props;
 
-    const posSteps = Array.from(Array(max / step), (_, current) => current + min + step);
+    return Array.from(
+      Array(max - min + 1),
+      (_, current) => current + min
+    );
+  }
+
+  private _getStepPosMap (): Array<number> {
+    const { max, baseWidth } = this.props;
+    const posSteps = this._getStepIndexes();
+    const distanceBetweenSteps = baseWidth / (max - 1);
 
     return posSteps
-      .concat(0)
       .map(
-        current => {
-          const stepCoord = current * baseWidth / (max / step);
+        (current, idx) => {
+          if (idx === 0) {
+            return 0;
+          }
 
-          return stepCoord === baseWidth
-            ? stepCoord - this.handle.width()
-            : Math.floor(stepCoord)
+          if (idx === posSteps.length - 1) {
+            return baseWidth - this.handle.width()
+          }
+
+          return idx * distanceBetweenSteps;
         }
       );
   }
 
   private _onMove (evt: JQuery.Event): void {
-    const stepsMap = this._getPosMap();
-    const closest = findClosestInArray(stepsMap, this._getMousePositionInside(evt));
+    const stepsMap = this._getStepPosMap();
+    const closest = findClosestInArray(
+      stepsMap,
+      this._getMousePositionInside(evt)
+    );
 
     if (evt.type === "mousemove") {
       evt.preventDefault();
@@ -91,11 +108,26 @@ export default class Handle {
     // moveHandleAt(this.handle, evt); // ? if stepless
 
     if ((Math.abs(this._getMousePositionInside(evt) - closest)) >= 5) {
+      // Gradient on handle position set
+      setBgGradient(
+        this.handle.parent(),
+        this.props.colors,
+        calcPercentage(
+          this.handle.position().left + this.handle.width(),
+          this.handle.parent().width()
+        )
+      );
+
       this.moveTo(closest);
     }
   }
 
   private _onStop (): void {
+    const stepIndexes = this._getStepIndexes();
+    const stepsPosMap = this._getStepPosMap();
+    const steps = stepsPosMap.reduce((acc, stepPos, idx) => ({
+      ...acc, [ stepPos ]: stepIndexes[idx]
+    }), {});
     const { signal, min, max } = this.props;
 
     const isHandleOnRightBoundary = () =>
@@ -103,6 +135,15 @@ export default class Handle {
 
     const isHandleOnLeftBoundary = () =>
       this.handle.position().left <= 0;
+
+    const closest = findClosestInArray(
+      stepsPosMap,
+      this.handle.position().left
+    );
+
+    console.log(
+      stepsPosMap
+    )
 
     if (isHandleOnLeftBoundary()) {
       signal(SetModel, {
@@ -116,10 +157,7 @@ export default class Handle {
       });
     } else {
       signal(SetModel, {
-        value: normalizePos(
-          this.handle.parent().width() / max,
-          this.handle.position().left
-        ),
+        value: steps[closest],
         percent: (
           (this.handle.position().left + this.handle.width() / 2) / this.handle.parent().width()
         ) * 100
@@ -186,10 +224,12 @@ export default class Handle {
   }
 
   private _preinit(): void {
-    const { pos, max, handleWidth, baseWidth } = this.props;
+    const { pos, max, min, handleWidth, baseWidth } = this.props;
 
     if (pos === max) {
       this.moveTo((pos * (baseWidth / max)) - handleWidth);
+    } else if (pos === min) {
+      this.moveTo(0)
     } else {
       this.moveTo(pos * (baseWidth / max));
     }
@@ -205,10 +245,6 @@ export default class Handle {
     this.handle.css({
       left: pos
     })
-  }
-
-  move (direction: Direction): void {
-    console.log("move", direction);
   }
 
   init (): JQuery<HTMLElement> {

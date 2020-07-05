@@ -15,9 +15,9 @@ export default class MyRange {
     this.range = this.node.find("input[type='range']")
     this.options = {
       min: 0,
-      max: 10,
+      max: 5,
       step: 1,
-      value: 5,
+      value: 3, // check if more than max
 
       colors: null,
 
