@@ -65,18 +65,20 @@ export default class Handle {
   private _getStepPosMap (): Array<number> {
     const { max, baseWidth } = this.props;
     const posSteps = this._getStepIndexes();
-    const distanceBetweenSteps = baseWidth / (max - 1);
+    const distanceBetweenSteps = baseWidth / (posSteps.length - 1);
 
     return posSteps
       .map(
-        (current, idx) => {
-          if (idx === 0) {
-            return 0;
-          }
+        (_, idx) => {
+          // if (idx === 0) {
+          //   return 0;
+          // }
 
-          if (idx === posSteps.length - 1) {
-            return baseWidth - this.handle.width()
-          }
+          // if (idx === posSteps.length - 1) {
+          //   return baseWidth - this.handle.width()
+          // }
+
+          // console.log(idx, distanceBetweenSteps);
 
           return idx * distanceBetweenSteps;
         }
@@ -84,9 +86,9 @@ export default class Handle {
   }
 
   private _onMove (evt: JQuery.Event): void {
-    const stepsMap = this._getStepPosMap();
+    const stepsPosMap = this._getStepPosMap();
     const closest = findClosestInArray(
-      stepsMap,
+      stepsPosMap,
       this._getMousePositionInside(evt)
     );
 
@@ -107,7 +109,9 @@ export default class Handle {
 
     // moveHandleAt(this.handle, evt); // ? if stepless
 
-    if ((Math.abs(this._getMousePositionInside(evt) - closest)) >= 5) {
+    const mousePositionInside = this._getMousePositionInside(evt);
+
+    if ((Math.abs(mousePositionInside - closest)) >= 5) {
       // Gradient on handle position set
       setBgGradient(
         this.handle.parent(),
@@ -128,6 +132,7 @@ export default class Handle {
     const steps = stepsPosMap.reduce((acc, stepPos, idx) => ({
       ...acc, [ stepPos ]: stepIndexes[idx]
     }), {});
+    console.log(steps);
     const { signal, min, max } = this.props;
 
     const isHandleOnRightBoundary = () =>
@@ -141,19 +146,10 @@ export default class Handle {
       this.handle.position().left
     );
 
-    console.log(
-      stepsPosMap
-    )
-
     if (isHandleOnLeftBoundary()) {
       signal(SetModel, {
         value: min,
         percent: 0
-      });
-    } else if (isHandleOnRightBoundary()) {
-      signal(SetModel, {
-        value: max,
-        percent: 100
       });
     } else {
       signal(SetModel, {
@@ -163,6 +159,13 @@ export default class Handle {
         ) * 100
       });
     }
+    // else if (isHandleOnRightBoundary()) {
+    //   signal(SetModel, {
+    //     value: max,
+    //     percent: 100
+    //   });
+    // }
+
 
     $(document).off("mousemove.range.handle touchmove.range.handle");
     $(document).off("mouseup.range.handle touchend.range.handle");
@@ -171,6 +174,11 @@ export default class Handle {
   private _onPress (evt: JQuery.Event): void {
     const { colors, max, pos } = this.props;
     const { _onMove, _onStop } = this;
+    const stepIndexes = this._getStepIndexes();
+    const stepsPosMap = this._getStepPosMap();
+    const steps = stepsPosMap.reduce((acc, stepPos, idx) => ({
+      ...acc, [ stepIndexes[idx] ]: stepPos
+    }), {});
 
     evt.stopPropagation();
 
@@ -189,7 +197,7 @@ export default class Handle {
       this.handle.parent(),
       colors,
       calcPercentage(
-        (pos * this.handle.parent().width() / max) + this.handle.width() / 2,
+        steps[pos],
         this.handle.parent().width()
       )
     );
@@ -198,13 +206,18 @@ export default class Handle {
   private _onPageReady (): void {
     const { signal, colors, max, pos, baseWidth } = this.props;
     const unitWidth = this.handle.parent().width() / max;
+    const stepIndexes = this._getStepIndexes();
+    const stepsPosMap = this._getStepPosMap();
+    const steps = stepsPosMap.reduce((acc, stepPos, idx) => ({
+      ...acc, [ stepIndexes[idx] ]: stepPos
+    }), {});
 
     // Gradient on page load
     setBgGradient(
       this.handle.parent(),
       colors,
       calcPercentage(
-        pos * unitWidth + this.handle.width() / 2,
+        steps[pos],
         this.handle.parent().width()
       )
     );
@@ -225,13 +238,18 @@ export default class Handle {
 
   private _preinit(): void {
     const { pos, max, min, handleWidth, baseWidth } = this.props;
+    const stepIndexes = this._getStepIndexes();
+    const stepsPosMap = this._getStepPosMap();
+    const steps = stepsPosMap.reduce((acc, stepPos, idx) => ({
+      ...acc, [ stepIndexes[idx] ]: stepPos
+    }), {});
 
     if (pos === max) {
       this.moveTo((pos * (baseWidth / max)) - handleWidth);
     } else if (pos === min) {
       this.moveTo(0)
     } else {
-      this.moveTo(pos * (baseWidth / max));
+      this.moveTo(steps[pos])
     }
 
     this.handle.attr("tabindex", 0);
@@ -241,10 +259,16 @@ export default class Handle {
     return this.handle.position().left;
   }
 
-  moveTo (pos: number): void {
-    this.handle.css({
-      left: pos
-    })
+  moveTo (left: number): void {
+    const { baseWidth } = this.props;
+
+    if (left >= baseWidth) {
+      this.handle.css({
+        left: left - this.handle.width()
+      })
+    } else {
+      this.handle.css({ left })
+    }
   }
 
   init (): JQuery<HTMLElement> {
