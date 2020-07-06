@@ -89,8 +89,10 @@ export default class Handle {
     const stepsPosMap = this._getStepPosMap();
     const closest = findClosestInArray(
       stepsPosMap,
-      this._getMousePositionInside(evt)
+      this._getMousePositionInside(evt) - (this.handle.width() / 2)
     );
+
+    // const threshold = Math.floor((stepsPosMap[1] - stepsPosMap[0]) / 2);
 
     if (evt.type === "mousemove") {
       evt.preventDefault();
@@ -109,21 +111,17 @@ export default class Handle {
 
     // moveHandleAt(this.handle, evt); // ? if stepless
 
-    const mousePositionInside = this._getMousePositionInside(evt);
+    // Gradient on handle position set
+    setBgGradient(
+      this.handle.parent(),
+      this.props.colors,
+      calcPercentage(
+        this.handle.position().left + this.handle.width(),
+        this.handle.parent().width()
+      )
+    );
 
-    if ((Math.abs(mousePositionInside - closest)) >= 5) {
-      // Gradient on handle position set
-      setBgGradient(
-        this.handle.parent(),
-        this.props.colors,
-        calcPercentage(
-          this.handle.position().left + this.handle.width(),
-          this.handle.parent().width()
-        )
-      );
-
-      this.moveTo(closest);
-    }
+    this.moveTo(closest);
   }
 
   private _onStop (): void {
@@ -260,15 +258,7 @@ export default class Handle {
   }
 
   moveTo (left: number): void {
-    const { baseWidth } = this.props;
-
-    if (left >= baseWidth) {
-      this.handle.css({
-        left: left - this.handle.width()
-      })
-    } else {
-      this.handle.css({ left })
-    }
+    this.handle.css({ left })
   }
 
   init (): JQuery<HTMLElement> {
