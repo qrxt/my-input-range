@@ -8,7 +8,7 @@ const rangeElem = $(".range-example");
 
 if (rangeElem.length > 0) {
   const range = new Range(rangeElem, {
-    min: 1,
+    min: 0,
     max: 100,
     value: 5,
 
