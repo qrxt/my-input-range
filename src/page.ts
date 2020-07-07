@@ -8,9 +8,10 @@ const rangeElem = $(".range-example");
 
 if (rangeElem.length > 0) {
   const range = new Range(rangeElem, {
-    min: 0,
-    max: 100,
-    value: 5,
+    min: 4,
+    max: 12,
+    step: 2,
+    value: 6,
 
     colors: [
       "rgba(0, 200, 180, 0.4)",

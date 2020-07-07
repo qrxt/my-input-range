@@ -40,24 +40,30 @@ export default class Handle {
   }
 
   private _getStepIndexes (): Array<number> {
-    const { min, max } = this.props;
+    const { min, max, step } = this.props;
+    const indexesLength = Math.ceil((max - min + 1) / step);
 
-    return Array.from(
-      Array(max - min + 1),
-      (_, current) => current + min
+    const t = Array.from(
+      Array(indexesLength),
+      (_, current) => current * step + min
     );
+
+    console.log(t);
+
+    return t;
   }
 
   private _getStepPosMap (): Array<number> {
-    const { baseWidth } = this.props;
+    const { baseWidth, handleWidth } = this.props;
     const posSteps = this._getStepIndexes();
-    // const distanceBetweenSteps = baseWidth / (posSteps.length - 1);
-    const distanceBetweenSteps = (baseWidth) / (posSteps.length - 1); // basew - this.handleWidth
+    const distanceBetweenSteps = (baseWidth - handleWidth) / (posSteps.length - 1);
 
-    return posSteps
-      .map(
-        (_, idx) => idx * distanceBetweenSteps
-      );
+    const t = posSteps
+      .map((_, idx) => idx * distanceBetweenSteps);
+
+    console.log(t);
+
+    return t;
   }
 
   private _getStepsPosMap (posToIdx = false): { [key: number]: number } {
@@ -174,7 +180,7 @@ export default class Handle {
   }
 
   private _preinit(): void {
-    const { pos, max, min, handleWidth, baseWidth } = this.props;
+    const { pos, min } = this.props;
     const steps = this._getStepsPosMap();
 
     // if (pos === max) {
