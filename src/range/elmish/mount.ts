@@ -2,6 +2,10 @@
 import Model from "@interfaces/Model.interface";
 import Payload from "@interfaces/Payload.interface";
 
+// Types
+
+import Signal from "@type/Signal.type";
+
 // Elmish
 import update from "./update";
 import view from "./view";

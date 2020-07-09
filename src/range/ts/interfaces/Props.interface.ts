@@ -1,7 +1,9 @@
-import Payload from "@interfaces/Payload.interface";
+// Types
+
+import Signal from "@type/Signal.type";
 
 export default interface Props {
-  signal?: (action: string, payload: Payload, rerender?: boolean) => void
+  signal?: Signal
 
   className?: string
 

@@ -1,19 +1,22 @@
 // Interfaces
 
 import Model from "@interfaces/Model.interface";
-import Payload from "@interfaces/Payload.interface";
 
 // Elements
 
-import div from "@elements/div";
+import range from "@elements/range";
 import base from "@elements/base";
 import Handle from "@elements/handle";
+
+// Types
+
+import Signal from "@type/Signal.type";
 
 const empty = (node: JQuery<HTMLElement>): void => {
   node.children().remove();
 };
 
-export default (signal: (action: string, payload?: Payload, rerender?: boolean) => void, model: Model, root: JQuery<HTMLElement>): void => {
+export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void => {
   empty(root);
 
   const handle = new Handle({
@@ -32,8 +35,11 @@ export default (signal: (action: string, payload?: Payload, rerender?: boolean) 
   });
 
   root.append(
-    div(
-      { className: "range" },
+    range(
+      {
+        className: "range",
+        signal: signal
+      },
       base(
         {
           className: "range__base",

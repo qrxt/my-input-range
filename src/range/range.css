@@ -19,11 +19,6 @@
   height: 10px;
   position: relative;
 
-  /* background-color: transparent; */
-
-  background: linear-gradient(117deg,#0d064c 0,#740887 100%);
-  background-size: contain;
-
   border: 1px solid rgb(128, 128, 128);
   border-radius: 5px;
 }

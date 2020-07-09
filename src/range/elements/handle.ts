@@ -6,7 +6,7 @@ import HandleProps from "@interfaces/HandleProps.interface";
 
 import ActionsEnum from "@enums/ActionsEnum.enums";
 
-const { SetModel } = ActionsEnum;
+const { SetValue, SetSizes } = ActionsEnum;
 
 // Elements
 
@@ -22,6 +22,8 @@ import findClosestInArray from "@utils/findClosestInArray";
 const EVT_MOVE = "mousemove.range.handle touchmove.range.handle";
 const EVT_STOP = "mouseup.range.handle touchend.range.handle";
 const EVT_START = "mousedown.range.handle touchstart.range.handle";
+const EVT_DRAGSTART = "dragstart.range.handle";
+const EVT_KEYDOWN = "keydown.range.handle";
 
 export default class Handle {
   props: HandleProps
@@ -43,14 +45,10 @@ export default class Handle {
     const { min, max, step } = this.props;
     const indexesLength = Math.ceil((max - min + 1) / step);
 
-    const t = Array.from(
+    return Array.from(
       Array(indexesLength),
       (_, current) => current * step + min
     );
-
-    console.log(t);
-
-    return t;
   }
 
   private _getStepPosMap (): Array<number> {
@@ -58,17 +56,14 @@ export default class Handle {
     const posSteps = this._getStepIndexes();
     const distanceBetweenSteps = (baseWidth - handleWidth) / (posSteps.length - 1);
 
-    const t = posSteps
+    return posSteps
       .map((_, idx) => idx * distanceBetweenSteps);
-
-    console.log(t);
-
-    return t;
   }
 
   private _getStepsPosMap (posToIdx = false): { [key: number]: number } {
     const stepIndexes = this._getStepIndexes();
     const stepsPosMap = this._getStepPosMap();
+    // console.log(stepsPosMap);
 
     return posToIdx
       ? stepsPosMap.reduce((acc, stepPos, idx) => ({
@@ -80,10 +75,11 @@ export default class Handle {
   }
 
   private _onMove (evt: JQuery.Event): void {
+    const { handleWidth, baseWidth } = this.props;
     const stepsPosMap = this._getStepPosMap();
     const closest = findClosestInArray(
       stepsPosMap,
-      this._getMousePositionInside(evt) - (this.handleWidth / 2)
+      this._getMousePositionInside(evt) - (handleWidth / 2)
     );
 
     if (evt.type === "mousemove") {
@@ -97,7 +93,7 @@ export default class Handle {
       this.props.colors,
       calcPercentage(
         this.left + this.handleWidth / 2,
-        this.parentWidth
+        baseWidth
       )
     );
 
@@ -105,7 +101,7 @@ export default class Handle {
   }
 
   private _onStop (): void {
-    const { signal } = this.props;
+    const { signal, handleWidth, baseWidth } = this.props;
     const stepsPosMap = this._getStepPosMap();
     const steps = this._getStepsPosMap(true);
     const closest = findClosestInArray(
@@ -113,9 +109,9 @@ export default class Handle {
       this.left
     );
 
-    signal(SetModel, {
+    signal(SetValue, {
       value: steps[closest],
-      percent: ((this.left + this.handleWidth / 2) / this.parentWidth) * 100
+      percent: ((this.left + handleWidth / 2) / baseWidth) * 100
     });
 
     $(document).off(EVT_MOVE);
@@ -123,7 +119,7 @@ export default class Handle {
   }
 
   private _onPress (evt: JQuery.Event): void {
-    const { colors, pos } = this.props;
+    const { colors, pos, baseWidth } = this.props;
     const { _onMove, _onStop } = this;
     const steps = this._getStepsPosMap()
 
@@ -144,15 +140,15 @@ export default class Handle {
       this.handle.parent(),
       colors,
       calcPercentage(
-        steps[pos],
-        this.parentWidth
+        steps[pos] + this.handle.width() / 2,
+        baseWidth
       )
     );
   }
 
   private _onPageReady (): void {
     const { signal, colors, max, pos, baseWidth } = this.props;
-    const unitWidth = this.parentWidth / max;
+    const unitWidth = baseWidth / max;
     const steps = this._getStepsPosMap()
 
     // Gradient on page load
@@ -160,17 +156,17 @@ export default class Handle {
       this.handle.parent(),
       colors,
       calcPercentage(
-        steps[pos],
-        this.parentWidth
+        steps[pos] + this.handle.width() / 2,
+        baseWidth
       )
     );
 
     if (!baseWidth) {
       this.moveTo(pos * unitWidth);
 
-      signal(SetModel, {
+      signal(SetSizes, {
         handleWidth: this.handleWidth,
-        baseWidth: this.parentWidth,
+        baseWidth: this.handle.parent().width(),
       });
     }
   }
@@ -179,35 +175,30 @@ export default class Handle {
     return false;
   }
 
+  private _onKeyDown (evt: JQuery.Event): void {
+    console.log(evt.key);
+  }
+
   private _preinit(): void {
-    const { pos, min } = this.props;
+    const { pos } = this.props;
     const steps = this._getStepsPosMap();
 
-    // if (pos === max) {
-    //   this.moveTo((pos * (baseWidth / max)) - handleWidth);
-    // } else
-    if (pos === min) {
-      this.moveTo(0)
-    } else {
-      this.moveTo(steps[pos])
-    }
+    // console.log(steps);
+
+    this.moveTo(steps[pos])
 
     this.handle.attr("tabindex", 0);
   }
 
-  get left (): number {
+  private get left (): number {
     return this.handle.position().left;
   }
 
-  get handleWidth (): number {
+  private get handleWidth (): number {
     return this.handle.width();
   }
 
-  get parentWidth (): number {
-    return this.handle.parent().width();
-  }
-
-  moveTo (left: number): void {
+  private moveTo (left: number): void {
     this.handle.css({ left })
   }
 
@@ -215,7 +206,8 @@ export default class Handle {
     const {
       _onPageReady,
       _onDragStart,
-      _onPress
+      _onPress,
+      _onKeyDown
     } = this;
 
     this._preinit();
@@ -223,13 +215,18 @@ export default class Handle {
     $(document).ready(_onPageReady.bind(this));
 
     this.handle.on(
-      "dragstart.range.handle",
+      EVT_DRAGSTART,
       _onDragStart.bind(this)
     );
 
     this.handle.on(
       EVT_START,
       _onPress.bind(this)
+    );
+
+    this.handle.on(
+      EVT_KEYDOWN,
+      _onKeyDown.bind(this)
     );
 
     return this.handle;
