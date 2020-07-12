@@ -10,7 +10,7 @@ if (rangeElem.length > 0) {
   const range = new Range(rangeElem, {
     min: 0,
     max: 10,
-    step: 1,
+    step: 111,
     value: 6,
 
     colors: [

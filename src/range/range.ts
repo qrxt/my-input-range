@@ -5,24 +5,47 @@ import Model from "@interfaces/Model.interface";
 
 import Options from "@interfaces/Options.interface";
 
+const normalize = (options: Options): Options => {
+  const {
+    min,
+    max,
+    step,
+    value
+  } = options;
+
+  const stepsSum = Math.abs(min) + Math.abs(max);
+  const isValueOutOfBounds = (value < min || value > max);
+  const isStepTooBig = step > stepsSum;
+
+  return {
+    ...options,
+
+    max: max < min ? min + step : max,
+    step: isStepTooBig ? stepsSum : step,
+    value: isValueOutOfBounds ? Math.round(stepsSum / 2) : value,
+  };
+};
+
 export default class MyRange {
-  node: JQuery<HTMLElement>;
-  range: JQuery<HTMLElement>;
-  options: Options;
+  public readonly node: JQuery<HTMLElement>;
+  public readonly range: JQuery<HTMLElement>;
+  public readonly options: Options;
 
   constructor (node: JQuery<HTMLElement>, options: Options) {
     this.node = node;
-    this.range = this.node.find("input[type='range']")
-    this.options = {
+    this.range = this.node.find("input[type='range']");
+    this.options = normalize({
       min: 0,
       max: 5,
       step: 1,
-      value: 3, // check if more than max
+      value: 3,
 
       colors: null,
 
       ...options
-    };
+    });
+
+    console.log(this.options);
   }
 
   get value(): number {
