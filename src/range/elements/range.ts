@@ -1,3 +1,5 @@
+import ResizeObserver from "resize-observer-polyfill";
+
 // Interfaces
 
 import Props from "@interfaces/Props.interface";
@@ -12,32 +14,30 @@ const { SetBaseWidth } = ActionsEnum;
 
 import div from "@elements/div";
 
-const EVT_RESIZE = "resize.range";
-
 export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement> => {
   const {
     className,
-    signal
+    signal,
+    width
   } = props;
 
   const range = div({
     className
   }, children);
 
-  const onResize = (): void => {
-    console.log("resize");
-    const baseWidth = range.width()
-
-    if (baseWidth !== 0) {
-      signal(SetBaseWidth, { baseWidth })
+  const observer: ResizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const afterResizeWidth = entry.contentRect.width
+      const isRendered = afterResizeWidth !== 0;
+      const threshold = 3;
+      const widthsSub = Math.abs(width - afterResizeWidth);
+      if (width && isRendered && widthsSub > threshold) {
+        signal(SetBaseWidth, { baseWidth: afterResizeWidth })
+      }
     }
-
-    $(window).off(EVT_RESIZE)
-  };
-
-  $(document).ready(() => {
-    $(window).on(EVT_RESIZE, onResize);
   });
+
+  observer.observe(range.get(0));
 
   return range;
 }

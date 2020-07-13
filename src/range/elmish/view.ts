@@ -38,6 +38,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     range(
       {
         className: "range",
+        width: model.baseWidth,
         signal: signal
       },
       base(
