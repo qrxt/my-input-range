@@ -69,7 +69,7 @@ export default class Handle {
   }
 
   private _getStepPosMap (): Array<number> {
-    const { baseWidth, handleWidth, vertical } = this.props;
+    const { baseWidth, handleWidth } = this.props;
 
     const posSteps = this._getStepIndexes();
     const stepsQuantity = posSteps.length - 1;
@@ -152,7 +152,7 @@ export default class Handle {
   }
 
   private _onPress (evt: JQuery.Event): void {
-    const { colors, pos, baseWidth, vertical } = this.props;
+    const { colors, pos, baseWidth, handleWidth, vertical } = this.props;
     const { _onMove, _onStop } = this;
     const steps = this._getStepsPosMap()
 
@@ -169,7 +169,7 @@ export default class Handle {
     );
 
     const percentage = calcPercentage(
-      steps[pos] + this.handle.width() / 2,
+      steps[pos] + handleWidth / 2,
       baseWidth
     );
     const currentPercentage = vertical
@@ -187,12 +187,12 @@ export default class Handle {
   }
 
   private _onPageReady (): void {
-    const { signal, colors, max, pos, baseWidth, vertical } = this.props;
+    const { signal, colors, max, pos, baseWidth, handleWidth, vertical } = this.props;
     const unitWidth = baseWidth / max;
     const steps = this._getStepsPosMap()
 
     const percentage = calcPercentage(
-      steps[pos] + this.handle.width() / 2,
+      steps[pos] + (handleWidth / 2),
       baseWidth
     );
     const currentPercentage = vertical

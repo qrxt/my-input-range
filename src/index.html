@@ -10,21 +10,38 @@
     <h1>Oh hi!</h1>
 
     <div class="page">
+
       <p>Default Browser Slider</p>
       <input type="range" min="1" max="100" step="1">
 
+      <!-- Example Sliders -->
       <p>My Custom Range Slider</p>
-      <div class="page__range range-example">
+      <div class="page__range page__range--horizontal js-range-example-horizontal">
         <input type="range" min="0" max="10" step="1">
       </div>
+
+      <p>My Custom Range Slider (Vertical)</p>
+      <div class="page__range page__range--vertical js-range-example-vertical">
+        <input type="range" min="0" max="10" step="1">
+      </div>
+
+      <!-- RGB Sliders Example -->
+
+      <p>RGB Colorpicker</p>
+      <div class="page__wrapper">
+        <div class="page__range page__range--colorpicker js-range-example-red">
+          <input type="range" min="0" max="10" step="1">
+        </div>
+        <div class="page__range page__range--colorpicker js-range-example-green">
+          <input type="range" min="0" max="10" step="1">
+        </div>
+        <div class="page__range page__range--colorpicker js-range-example-blue">
+          <input type="range" min="0" max="10" step="1">
+        </div>
+
+        <div class="page__color"></div>
+      </div>
+
     </div>
-
-    <script>
-      const defaultRange = document.querySelector("input[type='range']");
-
-      defaultRange.addEventListener("change", () => {
-        console.log(defaultRange.value)
-      })
-    </script>
   </body>
 </html>
