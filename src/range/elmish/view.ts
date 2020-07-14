@@ -28,6 +28,8 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     pos: model.value,
     step: model.step,
 
+    vertical: model.vertical,
+
     handleWidth: model.handleWidth,
     baseWidth: model.baseWidth,
 
@@ -39,12 +41,15 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
       {
         className: "range",
         width: model.baseWidth,
-        signal: signal
+        signal: signal,
+        vertical: model.vertical
       },
       base(
         {
           className: "range__base",
           colors: model.colors,
+
+          vertical: model.vertical,
 
           percent: model.percent
         },

@@ -2,10 +2,6 @@
 import Model from "@interfaces/Model.interface";
 import Payload from "@interfaces/Payload.interface";
 
-// Types
-
-import Signal from "@type/Signal.type";
-
 // Elmish
 import update from "./update";
 import view from "./view";
@@ -16,7 +12,7 @@ export default (model: Model, range: MyRange): void => {
   const signal = (action: string, payload?: Payload, rerender = true): void => {
     model = update(model, action, payload); // mut
 
-    // console.log(model);
+    console.log(model);
 
     range.value = model.value;
 

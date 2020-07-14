@@ -6,6 +6,8 @@ export default interface Model {
   max?: number,
   step?: number,
 
+  vertical?: boolean,
+
   handleWidth: number | null,
   baseWidth: number | null,
 

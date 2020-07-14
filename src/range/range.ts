@@ -40,12 +40,12 @@ export default class MyRange {
       step: 1,
       value: 3,
 
+      vertical: false,
+
       colors: null,
 
       ...options
     });
-
-    console.log(this.options);
   }
 
   get value(): number {
@@ -62,6 +62,8 @@ export default class MyRange {
       min: this.options.min,
       max: this.options.max,
       step: this.options.step,
+
+      vertical: this.options.vertical,
 
       baseWidth: null,
       handleWidth: null,

@@ -16,7 +16,7 @@ import div from "@elements/div";
 
 import calcPercentage from "@utils/calcPercentage";
 import setBgGradient from "@utils/setBgGradient";
-import getPageX from "@utils/getPageX";
+import getCursorDocumentOffset from "@utils/getCursorDocumentOffset";
 import findClosestInArray from "@utils/findClosestInArray";
 
 const EVT_MOVE = "mousemove.range.handle touchmove.range.handle";
@@ -31,14 +31,31 @@ export default class Handle {
 
   constructor (props: HandleProps) {
     this.props = props;
+
+    const { vertical, className } = this.props;
+    const modifiedClassname = vertical
+      ? `${ className } range__handle--vertical`
+      : className;
+
     this.handle = div(
-      props,
+      {
+        ...props,
+        className: modifiedClassname
+      },
       null
     );
   }
 
   private _getMousePositionInside (evt: JQuery.Event): number {
-    return getPageX(evt) - this.handle.parent().offset().left;
+    const { vertical } = this.props;
+
+    const cursorDocumentOffset = vertical
+      ? getCursorDocumentOffset(evt, "vertical")
+      : getCursorDocumentOffset(evt)
+
+    return vertical
+      ? cursorDocumentOffset - this.handle.parent().offset().top
+      : cursorDocumentOffset - this.handle.parent().offset().left;
   }
 
   private _getStepIndexes (): Array<number> {
@@ -52,18 +69,23 @@ export default class Handle {
   }
 
   private _getStepPosMap (): Array<number> {
-    const { baseWidth, handleWidth } = this.props;
+    const { baseWidth, handleWidth, vertical } = this.props;
+
     const posSteps = this._getStepIndexes();
-    const distanceBetweenSteps = (baseWidth - handleWidth) / (posSteps.length - 1);
+    const stepsQuantity = posSteps.length - 1;
+
+    const distanceBetweenSteps = (baseWidth - handleWidth) / stepsQuantity;
 
     return posSteps
-      .map((_, idx) => idx * distanceBetweenSteps);
+      .map((_, idx) => idx * distanceBetweenSteps); // ?
   }
 
   private _getStepsPosMap (posToIdx = false): { [key: number]: number } {
+    const { vertical } = this.props;
     const stepIndexes = this._getStepIndexes();
-    const stepsPosMap = this._getStepPosMap();
-    // console.log(stepsPosMap);
+    const stepsPosMap = vertical
+      ? this._getStepPosMap().slice().reverse()
+      : this._getStepPosMap();
 
     return posToIdx
       ? stepsPosMap.reduce((acc, stepPos, idx) => ({
@@ -75,7 +97,7 @@ export default class Handle {
   }
 
   private _onMove (evt: JQuery.Event): void {
-    const { handleWidth, baseWidth } = this.props;
+    const { handleWidth, baseWidth, vertical } = this.props;
     const stepsPosMap = this._getStepPosMap();
     const closest = findClosestInArray(
       stepsPosMap,
@@ -87,31 +109,42 @@ export default class Handle {
       evt.stopPropagation();
     }
 
+    const percentage = calcPercentage(
+      this.offset + this.handleWidth / 2,
+      baseWidth
+    );
+    const currentPercentage = vertical
+      ? 100 - percentage
+      : percentage;
+
     // Gradient on move
     setBgGradient(
       this.handle.parent(),
       this.props.colors,
-      calcPercentage(
-        this.left + this.handleWidth / 2,
-        baseWidth
-      )
+      currentPercentage,
+      vertical
     );
 
     this.moveTo(closest);
   }
 
   private _onStop (): void {
-    const { signal, handleWidth, baseWidth } = this.props;
+    const { signal, handleWidth, baseWidth, vertical } = this.props;
     const stepsPosMap = this._getStepPosMap();
     const steps = this._getStepsPosMap(true);
+
     const closest = findClosestInArray(
       stepsPosMap,
-      this.left
+      this.offset
     );
+
+    const currentPercent = ((this.offset + handleWidth / 2) / baseWidth) * 100;
 
     signal(SetValue, {
       value: steps[closest],
-      percent: ((this.left + handleWidth / 2) / baseWidth) * 100
+      percent: vertical
+        ? 100 - currentPercent
+        : currentPercent
     });
 
     $(document).off(EVT_MOVE);
@@ -119,7 +152,7 @@ export default class Handle {
   }
 
   private _onPress (evt: JQuery.Event): void {
-    const { colors, pos, baseWidth } = this.props;
+    const { colors, pos, baseWidth, vertical } = this.props;
     const { _onMove, _onStop } = this;
     const steps = this._getStepsPosMap()
 
@@ -135,30 +168,43 @@ export default class Handle {
       _onStop.bind(this)
     );
 
+    const percentage = calcPercentage(
+      steps[pos] + this.handle.width() / 2,
+      baseWidth
+    );
+    const currentPercentage = vertical
+      ? 100 - percentage
+      : percentage;
+
+
     // Gradient on press
     setBgGradient(
       this.handle.parent(),
       colors,
-      calcPercentage(
-        steps[pos] + this.handle.width() / 2,
-        baseWidth
-      )
+      currentPercentage,
+      vertical
     );
   }
 
   private _onPageReady (): void {
-    const { signal, colors, max, pos, baseWidth } = this.props;
+    const { signal, colors, max, pos, baseWidth, vertical } = this.props;
     const unitWidth = baseWidth / max;
     const steps = this._getStepsPosMap()
+
+    const percentage = calcPercentage(
+      steps[pos] + this.handle.width() / 2,
+      baseWidth
+    );
+    const currentPercentage = vertical
+      ? 100 - percentage
+      : percentage;
 
     // Gradient on page load
     setBgGradient(
       this.handle.parent(),
       colors,
-      calcPercentage(
-        steps[pos] + this.handle.width() / 2,
-        baseWidth
-      )
+      currentPercentage,
+      vertical
     );
 
     if (!baseWidth) {
@@ -166,7 +212,7 @@ export default class Handle {
 
       signal(SetSizes, {
         handleWidth: this.handleWidth,
-        baseWidth: this.handle.parent().width(),
+        baseWidth: this.baseWidth,
       });
     }
   }
@@ -179,27 +225,44 @@ export default class Handle {
     console.log(evt.key);
   }
 
-  private _preinit(): void {
-    const { pos } = this.props;
-    const steps = this._getStepsPosMap();
+  private get offset (): number {
+    const { vertical } = this.props;
 
-    // console.log(steps);
-
-    this.moveTo(steps[pos])
-
-    this.handle.attr("tabindex", 0);
+    return vertical
+      ? this.handle.position().top
+      : this.handle.position().left;
   }
 
-  private get left (): number {
-    return this.handle.position().left;
+  private get baseWidth (): number {
+    const { vertical } = this.props;
+
+    return vertical
+      ? this.handle.parent().height()
+      : this.handle.parent().width();
   }
 
   private get handleWidth (): number {
-    return this.handle.width();
+    const { vertical } = this.props;
+
+    return vertical
+      ? this.handle.height()
+      : this.handle.width();
   }
 
-  private moveTo (left: number): void {
-    this.handle.css({ left })
+  private moveTo (pos: number): void {
+    const { vertical } = this.props;
+
+    vertical
+      ? this.handle.css({ top: pos })
+      : this.handle.css({ left: pos });
+  }
+
+  private _preinit(): void {
+    const { pos } = this.props;
+    const steps = this._getStepsPosMap();
+    this.moveTo(steps[pos])
+
+    this.handle.attr("tabindex", 0);
   }
 
   init (): JQuery<HTMLElement> {

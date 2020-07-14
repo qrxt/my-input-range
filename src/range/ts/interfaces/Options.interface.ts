@@ -4,5 +4,7 @@ export default interface Options {
   step?: number,
   value?: number,
 
+  vertical?: boolean,
+
   colors?: Array<string>
 }

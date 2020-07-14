@@ -1,4 +1,4 @@
-import getPageX from "@utils/getPageX";
+import getPageX from "@utils/getCursorDocumentOffset";
 
 export default (elem: JQuery<HTMLElement>, evt: JQuery.Event): void => {
   const cursorX = getPageX(evt);

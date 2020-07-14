@@ -18,7 +18,8 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
   const {
     className,
     signal,
-    width
+    width,
+    vertical
   } = props;
 
   const range = div({
@@ -27,7 +28,9 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
 
   const observer: ResizeObserver = new ResizeObserver((entries) => {
     for (const entry of entries) {
-      const afterResizeWidth = entry.contentRect.width
+      const afterResizeWidth = vertical
+        ? entry.contentRect.height
+        : entry.contentRect.width
       const isRendered = afterResizeWidth !== 0;
       const threshold = 3;
       const widthsSub = Math.abs(width - afterResizeWidth);

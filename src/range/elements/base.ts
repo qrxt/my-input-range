@@ -14,17 +14,23 @@ export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLEle
   const {
     className,
     percent,
-    colors
+    colors,
+    vertical
   } = props;
 
+  const modifiedClassName = vertical
+    ? `${ className } range__base--vertical`
+    : className;
+
   const base = div({
-    className
+    className: modifiedClassName
   }, children);
 
   setBgGradient(
     base,
     colors,
-    percent
+    percent,
+    vertical
   )
 
   return base;

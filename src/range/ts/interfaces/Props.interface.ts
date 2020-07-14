@@ -6,6 +6,7 @@ export default interface Props {
   signal?: Signal
 
   width?: number,
+  vertical?: boolean,
 
   className?: string
 
