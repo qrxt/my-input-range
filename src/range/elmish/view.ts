@@ -20,6 +20,8 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
   empty(root);
 
   const handle = new Handle({
+    name: model.name,
+
     className: "range__handle range__handle--lower",
     signal: signal,
 
@@ -29,6 +31,10 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     step: model.step,
 
     vertical: model.vertical,
+
+    onChange: model.onChange,
+    onSlide: model.onSlide,
+    onLoad: model.onLoad,
 
     handleWidth: model.handleWidth,
     baseWidth: model.baseWidth,

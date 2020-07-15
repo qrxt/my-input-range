@@ -97,12 +97,14 @@ export default class Handle {
   }
 
   private _onMove (evt: JQuery.Event): void {
-    const { handleWidth, baseWidth, vertical } = this.props;
+    const { handleWidth, baseWidth, vertical, onSlide, name } = this.props;
     const stepsPosMap = this._getStepPosMap();
-    const closest = findClosestInArray(
+    const steps = this._getStepsPosMap(true);
+    const closestStepCoord = findClosestInArray(
       stepsPosMap,
       this._getMousePositionInside(evt) - (handleWidth / 2)
     );
+    const closestValue = steps[closestStepCoord];
 
     if (evt.type === "mousemove") {
       evt.preventDefault();
@@ -125,11 +127,20 @@ export default class Handle {
       vertical
     );
 
-    this.moveTo(closest);
+    this.moveTo(closestStepCoord);
+
+    // Event on slide
+    if (onSlide) {
+      onSlide(
+        [ closestValue ],
+        name,
+        this.handle
+      );
+    }
   }
 
   private _onStop (): void {
-    const { signal, handleWidth, baseWidth, vertical } = this.props;
+    const { signal, handleWidth, baseWidth, vertical, onChange } = this.props;
     const stepsPosMap = this._getStepPosMap();
     const steps = this._getStepsPosMap(true);
 
@@ -138,14 +149,21 @@ export default class Handle {
       this.offset
     );
 
-    const currentPercent = ((this.offset + handleWidth / 2) / baseWidth) * 100;
+    const valueToSet = steps[closest];
+    const percentage = ((this.offset + handleWidth / 2) / baseWidth) * 100
+    const currentPercentage = vertical
+      ? 100 - percentage
+      : percentage;
 
     signal(SetValue, {
-      value: steps[closest],
-      percent: vertical
-        ? 100 - currentPercent
-        : currentPercent
+      value: valueToSet,
+      percent: currentPercentage
     });
+
+    // Event on change
+    if (onChange) {
+      onChange([ valueToSet ]);
+    }
 
     $(document).off(EVT_MOVE);
     $(document).off(EVT_STOP);
@@ -187,7 +205,7 @@ export default class Handle {
   }
 
   private _onPageReady (): void {
-    const { signal, colors, max, pos, baseWidth, handleWidth, vertical } = this.props;
+    const { signal, colors, max, pos, baseWidth, handleWidth, vertical, onLoad } = this.props;
     const unitWidth = baseWidth / max;
     const steps = this._getStepsPosMap()
 

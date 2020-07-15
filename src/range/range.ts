@@ -35,12 +35,16 @@ export default class MyRange {
     this.node = node;
     this.range = this.node.find("input[type='range']");
     this.options = normalize({
+      name: "range-nameless",
+
       min: 0,
       max: 5,
       step: 1,
       value: 3,
 
       vertical: false,
+
+      onChange: null,
 
       colors: null,
 
@@ -56,14 +60,19 @@ export default class MyRange {
     this.options.value = val;
   }
 
-  init (): void {
+  init (): MyRange {
     const model: Model = {
+      name: this.options.name,
+
       value: this.value,
       min: this.options.min,
       max: this.options.max,
       step: this.options.step,
 
       vertical: this.options.vertical,
+
+      onChange: this.options.onChange,
+      onSlide: this.options.onSlide,
 
       baseWidth: null,
       handleWidth: null,
@@ -72,5 +81,7 @@ export default class MyRange {
     };
 
     mount(model, this);
+
+    return this;
   }
 }

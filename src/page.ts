@@ -37,6 +37,10 @@ new Range(rangeElemVertical, {
 
   vertical: true,
 
+  onChange: (values) => {
+    console.log(values);
+  },
+
   colors: [
     "rgba(80, 0, 220, 0.4)",
     "rgba(0, 0, 255, 0.4)"
@@ -45,9 +49,39 @@ new Range(rangeElemVertical, {
 
 // RGB Colorpicker
 
+const palette = $(".page__color");
+
+const setPaletteColor = (color: string, value: number): void => {
+  const bgColorString = palette.css("background-color");
+
+  const regexp = /rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/u;
+  const match = regexp.exec(bgColorString);
+
+  const red = match[1];
+  const green = match[2];
+  const blue = match[3];
+
+  const updatedColorResults: { [key: string]: string } = {
+    red: `rgb(${ value }, ${ green }, ${ blue })`,
+    green: `rgb(${ red }, ${ value }, ${ blue })`,
+    blue: `rgb(${ red }, ${ green }, ${ value })`
+  };
+
+  palette.css({
+    backgroundColor: updatedColorResults[color],
+    boxShadow: `0 0 10px ${ updatedColorResults[color] }`
+  });
+};
+
 const redColor = [ "#c0392b", "#ff9287" ];
 const greenColor = [ "#27ae60", "#6fd39b" ];
 const blueColor = [ "#2980b9", "#72b0d9" ];
+
+const updatePalette = (values: Array<number>, name: string) => {
+  const color = name.split("-")[2];
+
+  setPaletteColor(color, values[0]);
+};
 
 const defaultRangeOptions = {
   vertical: true,
@@ -55,12 +89,27 @@ const defaultRangeOptions = {
   min: 0,
   max: 255,
 
-  value: 128
+  onSlide: updatePalette,
+  onLoad: updatePalette,
+
+  value: 127
 }
 
-const rangeRed = new Range(rangeElemRed, { ...defaultRangeOptions, colors: redColor });
-const rangeGreen = new Range(rangeElemGreen, { ...defaultRangeOptions, colors: greenColor });
-const rangeBlue = new Range(rangeElemBlue, { ...defaultRangeOptions, colors: blueColor });
+const rangeRed = new Range(rangeElemRed, {
+  ...defaultRangeOptions,
+  name: "range-color-red",
+  colors: redColor
+});
+const rangeGreen = new Range(rangeElemGreen, {
+  ...defaultRangeOptions,
+  name: "range-color-green",
+  colors: greenColor
+});
+const rangeBlue = new Range(rangeElemBlue, {
+  ...defaultRangeOptions,
+  name: "range-color-blue",
+  colors: blueColor
+});
 
 [ rangeRed, rangeGreen, rangeBlue ]
   .forEach(range => range.init());
