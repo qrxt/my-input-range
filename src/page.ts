@@ -15,6 +15,7 @@ const rangeElemBlue = $(".js-range-example-blue");
 
 // Horizontal Example Range
 
+const inputNumber = $(".page__input-number");
 new Range(rangeElemHorizontal, {
   min: 1,
   max: 10,
@@ -24,12 +25,28 @@ new Range(rangeElemHorizontal, {
   colors: [
     "rgba(0, 200, 180, 0.4)",
     "rgba(200, 10, 180, 0.4)"
-  ]
+  ],
+
+  onResize: (entry, name) => {
+    console.log(entry, name)
+  },
+
+  onChange: values => {
+    inputNumber.val(values[0])
+  }
 }).init();
+
+// inputNumber.on("change", () => {
+//   regularRange.value = Number(inputNumber.val());
+
+//   console.log(regularRange.value);
+// });
 
 // Vertical Example Range
 
 new Range(rangeElemVertical, {
+  name: "range-annoying",
+
   min: 2,
   max: 6,
   step: 1,
@@ -38,7 +55,15 @@ new Range(rangeElemVertical, {
   vertical: true,
 
   onChange: (values) => {
-    console.log(values);
+    alert(values);
+  },
+
+  onLoad: (_, name) => {
+    console.log("i'm loaded! My name is", name)
+  },
+
+  onPress: (values, name, handle) => {
+    console.log(values, name, handle.width())
   },
 
   colors: [
@@ -83,7 +108,7 @@ const updatePalette = (values: Array<number>, name: string) => {
   setPaletteColor(color, values[0]);
 };
 
-const defaultRangeOptions = {
+const defaultColorRangeOptions = {
   vertical: true,
 
   min: 0,
@@ -96,17 +121,17 @@ const defaultRangeOptions = {
 }
 
 const rangeRed = new Range(rangeElemRed, {
-  ...defaultRangeOptions,
+  ...defaultColorRangeOptions,
   name: "range-color-red",
   colors: redColor
 });
 const rangeGreen = new Range(rangeElemGreen, {
-  ...defaultRangeOptions,
+  ...defaultColorRangeOptions,
   name: "range-color-green",
   colors: greenColor
 });
 const rangeBlue = new Range(rangeElemBlue, {
-  ...defaultRangeOptions,
+  ...defaultColorRangeOptions,
   name: "range-color-blue",
   colors: blueColor
 });

@@ -2,7 +2,10 @@
 
 import OnChange from "@type/OnChange.type";
 import OnSlide from "@type/OnSlide.type";
+import OnDraw from "@type/OnDraw.type";
 import OnLoad from "@type/OnLoad.type";
+import OnPress from "@type/OnPress.type";
+import OnResize from "@type/OnResize.type";
 
 export default interface Model {
   name?: string,
@@ -18,7 +21,10 @@ export default interface Model {
 
   onChange?: OnChange,
   onSlide?: OnSlide,
+  onDraw?: OnDraw,
   onLoad?: OnLoad,
+  onPress?: OnPress,
+  onResize?: OnResize,
 
   handleWidth: number | null,
   baseWidth: number | null,

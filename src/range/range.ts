@@ -45,6 +45,11 @@ export default class MyRange {
       vertical: false,
 
       onChange: null,
+      onSlide: null,
+      onDraw: null,
+      onLoad: null,
+      onPress: null,
+      onResize: null,
 
       colors: null,
 
@@ -73,6 +78,10 @@ export default class MyRange {
 
       onChange: this.options.onChange,
       onSlide: this.options.onSlide,
+      onDraw: this.options.onDraw,
+      onLoad: this.options.onLoad,
+      onPress: this.options.onPress,
+      onResize: this.options.onResize,
 
       baseWidth: null,
       handleWidth: null,

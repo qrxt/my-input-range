@@ -7,8 +7,6 @@
   </head>
 
   <body>
-    <h1>Oh hi!</h1>
-
     <div class="page">
 
       <p>Default Browser Slider</p>
@@ -16,8 +14,11 @@
 
       <!-- Example Sliders -->
       <p>My Custom Range Slider</p>
-      <div class="page__range page__range--horizontal js-range-example-horizontal">
-        <input type="range" min="0" max="10" step="1">
+      <div class="page__wrapper">
+        <div class="page__range page__range--horizontal js-range-example-horizontal">
+          <input type="range" min="0" max="10" step="1">
+        </div>
+        <input class="page__input-number" type="number" min="1" max="10" value="5">
       </div>
 
       <p>My Custom Range Slider (Vertical)</p>

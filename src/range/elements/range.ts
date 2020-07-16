@@ -19,7 +19,9 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
     className,
     signal,
     width,
-    vertical
+    vertical,
+    onResize,
+    name
   } = props;
 
   const range = div({
@@ -35,6 +37,11 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
       const threshold = 3;
       const widthsSub = Math.abs(width - afterResizeWidth);
       if (width && isRendered && widthsSub > threshold) {
+        // Event on resize
+        if (onResize) {
+          onResize(entry.contentRect, name);
+        }
+
         signal(SetBaseWidth, { baseWidth: afterResizeWidth })
       }
     }

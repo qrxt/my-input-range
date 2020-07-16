@@ -1,4 +1,5 @@
 .page {
+  width: 50%;
   padding-left: 15px;
 }
 
@@ -25,15 +26,22 @@
   height: 180px;
 }
 
+/* Input number */
+
+.page__input-number {
+  margin-left: 25px;
+  height: 15px;
+}
+
 /* RGB Colorpicker */
 
 .page__color {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border: 2px solid white;
   background-color: rgb(255, 255, 255);
   box-shadow: 0 0 10px;
-  margin-left: 50px;
+  margin-left: 75px;
 }
 
 .page__range--colorpicker {

@@ -170,7 +170,7 @@ export default class Handle {
   }
 
   private _onPress (evt: JQuery.Event): void {
-    const { colors, pos, baseWidth, handleWidth, vertical } = this.props;
+    const { colors, pos, baseWidth, handleWidth, vertical, name, onPress } = this.props;
     const { _onMove, _onStop } = this;
     const steps = this._getStepsPosMap()
 
@@ -194,6 +194,10 @@ export default class Handle {
       ? 100 - percentage
       : percentage;
 
+    // Event on press
+    if (onPress) {
+      onPress([ pos ], name, this.handle);
+    }
 
     // Gradient on press
     setBgGradient(
@@ -205,12 +209,21 @@ export default class Handle {
   }
 
   private _onPageReady (): void {
-    const { signal, colors, max, pos, baseWidth, handleWidth, vertical, onLoad } = this.props;
-    const unitWidth = baseWidth / max;
-    const steps = this._getStepsPosMap()
+    const {
+      signal,
+      colors,
+      pos,
+      baseWidth,
+      handleWidth,
+      vertical,
+      onLoad,
+      name
+    } = this.props;
+    const steps = this._getStepsPosMap();
+    const currentStepCoord = steps[pos];
 
     const percentage = calcPercentage(
-      steps[pos] + (handleWidth / 2),
+      currentStepCoord + (handleWidth / 2),
       baseWidth
     );
     const currentPercentage = vertical
@@ -226,12 +239,16 @@ export default class Handle {
     );
 
     if (!baseWidth) {
-      this.moveTo(pos * unitWidth);
+      this.moveTo(currentStepCoord);
 
       signal(SetSizes, {
         handleWidth: this.handleWidth,
         baseWidth: this.baseWidth,
       });
+
+      if (onLoad) {
+        onLoad([ pos ], name);
+      }
     }
   }
 
@@ -240,7 +257,7 @@ export default class Handle {
   }
 
   private _onKeyDown (evt: JQuery.Event): void {
-    console.log(evt.key);
+    // console.log(evt.key);
   }
 
   private get offset (): number {
@@ -276,9 +293,15 @@ export default class Handle {
   }
 
   private _preinit(): void {
-    const { pos } = this.props;
+    const { pos, onDraw, name } = this.props;
     const steps = this._getStepsPosMap();
+
     this.moveTo(steps[pos])
+
+    // Event on load
+    if (onDraw) {
+      onDraw([ pos ], name);
+    }
 
     this.handle.attr("tabindex", 0);
   }

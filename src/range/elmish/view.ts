@@ -34,7 +34,9 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
 
     onChange: model.onChange,
     onSlide: model.onSlide,
+    onDraw: model.onDraw,
     onLoad: model.onLoad,
+    onPress: model.onPress,
 
     handleWidth: model.handleWidth,
     baseWidth: model.baseWidth,
@@ -45,10 +47,15 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
   root.append(
     range(
       {
-        className: "range",
-        width: model.baseWidth,
+        name: model.name,
+
         signal: signal,
-        vertical: model.vertical
+        className: "range",
+
+        width: model.baseWidth,
+        vertical: model.vertical,
+
+        onResize: model.onResize,
       },
       base(
         {
