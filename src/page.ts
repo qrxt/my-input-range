@@ -16,7 +16,7 @@ const rangeElemBlue = $(".js-range-example-blue");
 // Horizontal Example Range
 
 const inputNumber = $(".page__input-number");
-new Range(rangeElemHorizontal, {
+const regularRange = new Range(rangeElemHorizontal, {
   min: 1,
   max: 10,
   step: 1,
@@ -36,11 +36,11 @@ new Range(rangeElemHorizontal, {
   }
 }).init();
 
-// inputNumber.on("change", () => {
-//   regularRange.value = Number(inputNumber.val());
+inputNumber.on("change", () => {
+  const inputValue = Number(inputNumber.val());
 
-//   console.log(regularRange.value);
-// });
+  regularRange.set(inputValue);
+});
 
 // Vertical Example Range
 
@@ -55,7 +55,7 @@ new Range(rangeElemVertical, {
   vertical: true,
 
   onChange: (values) => {
-    alert(values);
+    console.log(values);
   },
 
   onLoad: (_, name) => {

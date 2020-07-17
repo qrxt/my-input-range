@@ -18,6 +18,10 @@ import calcPercentage from "@utils/calcPercentage";
 import setBgGradient from "@utils/setBgGradient";
 import getCursorDocumentOffset from "@utils/getCursorDocumentOffset";
 import findClosestInArray from "@utils/findClosestInArray";
+//
+import getStepIndexes from "@utils/getStepIndexes";
+import getStepPositions from "@utils/getStepPositions";
+import getStepsPosMap from "@utils/getStepsPosMap";
 
 const EVT_MOVE = "mousemove.range.handle touchmove.range.handle";
 const EVT_STOP = "mouseup.range.handle touchend.range.handle";
@@ -58,50 +62,18 @@ export default class Handle {
       : cursorDocumentOffset - this.handle.parent().offset().left;
   }
 
-  private _getStepIndexes (): Array<number> {
-    const { min, max, step } = this.props;
-    const indexesLength = Math.ceil((max - min + 1) / step);
-
-    return Array.from(
-      Array(indexesLength),
-      (_, current) => current * step + min
-    );
-  }
-
-  private _getStepPosMap (): Array<number> {
-    const { baseWidth, handleWidth } = this.props;
-
-    const posSteps = this._getStepIndexes();
-    const stepsQuantity = posSteps.length - 1;
-
-    const distanceBetweenSteps = (baseWidth - handleWidth) / stepsQuantity;
-
-    return posSteps
-      .map((_, idx) => idx * distanceBetweenSteps); // ?
-  }
-
-  private _getStepsPosMap (posToIdx = false): { [key: number]: number } {
-    const { vertical } = this.props;
-    const stepIndexes = this._getStepIndexes();
-    const stepsPosMap = vertical
-      ? this._getStepPosMap().slice().reverse()
-      : this._getStepPosMap();
-
-    return posToIdx
-      ? stepsPosMap.reduce((acc, stepPos, idx) => ({
-        ...acc, [ stepPos ]: stepIndexes[idx]
-      }), {})
-      : stepsPosMap.reduce((acc, stepPos, idx) => ({
-        ...acc, [ stepIndexes[idx] ]: stepPos
-      }), {});
-  }
-
   private _onMove (evt: JQuery.Event): void {
-    const { handleWidth, baseWidth, vertical, onSlide, name } = this.props;
-    const stepsPosMap = this._getStepPosMap();
-    const steps = this._getStepsPosMap(true);
+    const {
+      handleWidth,
+      baseWidth, vertical,
+      onSlide, name,
+      min, max, step
+    } = this.props;
+    const stepIndexes = getStepIndexes(min, max, step);
+    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
+    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical, true);
     const closestStepCoord = findClosestInArray(
-      stepsPosMap,
+      stepPositions,
       this._getMousePositionInside(evt) - (handleWidth / 2)
     );
     const closestValue = steps[closestStepCoord];
@@ -140,24 +112,28 @@ export default class Handle {
   }
 
   private _onStop (): void {
-    const { signal, handleWidth, baseWidth, vertical, onChange } = this.props;
-    const stepsPosMap = this._getStepPosMap();
-    const steps = this._getStepsPosMap(true);
+    const {
+      signal,
+      handleWidth,
+      baseWidth,
+      vertical,
+      onChange,
+      min, max, step
+    } = this.props;
+    const stepIndexes = getStepIndexes(min, max, step);
+    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
+    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical, true);
 
     const closest = findClosestInArray(
-      stepsPosMap,
+      stepPositions,
       this.offset
     );
 
     const valueToSet = steps[closest];
-    const percentage = ((this.offset + handleWidth / 2) / baseWidth) * 100
-    const currentPercentage = vertical
-      ? 100 - percentage
-      : percentage;
 
     signal(SetValue, {
       value: valueToSet,
-      percent: currentPercentage
+      // percent: currentPercentage
     });
 
     // Event on change
@@ -170,9 +146,20 @@ export default class Handle {
   }
 
   private _onPress (evt: JQuery.Event): void {
-    const { colors, pos, baseWidth, handleWidth, vertical, name, onPress } = this.props;
+    const {
+      colors,
+      pos,
+      baseWidth,
+      handleWidth,
+      vertical,
+      name,
+      onPress,
+      min, max, step
+    } = this.props;
     const { _onMove, _onStop } = this;
-    const steps = this._getStepsPosMap()
+    const stepIndexes = getStepIndexes(min, max, step);
+    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
+    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
 
     evt.stopPropagation();
 
@@ -217,9 +204,13 @@ export default class Handle {
       handleWidth,
       vertical,
       onLoad,
-      name
+      name,
+      min, max, step
     } = this.props;
-    const steps = this._getStepsPosMap();
+    const stepIndexes = getStepIndexes(min, max, step);
+    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
+    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
+
     const currentStepCoord = steps[pos];
 
     const percentage = calcPercentage(
@@ -293,8 +284,15 @@ export default class Handle {
   }
 
   private _preinit(): void {
-    const { pos, onDraw, name } = this.props;
-    const steps = this._getStepsPosMap();
+    const {
+      pos,
+      onDraw,
+      name,
+      min, max, step, baseWidth, handleWidth, vertical
+    } = this.props;
+    const stepIndexes = getStepIndexes(min, max, step);
+    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
+    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
 
     this.moveTo(steps[pos])
 

@@ -25,7 +25,7 @@ const actions: Actions = {
   [ SetModel ]: setModel,
   [ SetSizes ]: setSizes,
   [ Redraw ]: redraw,
-  [ SetBaseWidth ]: setBaseWidth
+  [ SetBaseWidth ]: setBaseWidth,
 };
 
 export default actions;

@@ -1,9 +1,21 @@
-import { mount } from "./elmish";
-import Model from "@interfaces/Model.interface";
-
 // Interfaces
 
 import Options from "@interfaces/Options.interface";
+import Model from "@interfaces/Model.interface";
+
+// Types
+
+import Signal from "@type/Signal.type";
+
+// Enums
+
+import ActionsEnum from "@enums/ActionsEnum.enums";
+
+const { SetValue } = ActionsEnum;
+
+// Elmish
+
+import { mount } from "./elmish";
 
 const normalize = (options: Options): Options => {
   const {
@@ -30,9 +42,11 @@ export default class MyRange {
   public readonly node: JQuery<HTMLElement>;
   public readonly range: JQuery<HTMLElement>;
   public readonly options: Options;
+  private signal: null | Signal;
 
   constructor (node: JQuery<HTMLElement>, options: Options) {
     this.node = node;
+    this.signal = null;
     this.range = this.node.find("input[type='range']");
     this.options = normalize({
       name: "range-nameless",
@@ -57,12 +71,18 @@ export default class MyRange {
     });
   }
 
-  get value(): number {
+  get value (): number {
     return this.options.value;
   }
 
-  set value(val: number) {
+  set value (val: number) {
     this.options.value = val;
+  }
+
+  public set (val: number): void {
+    this.signal(SetValue, {
+      value: val
+    });
   }
 
   init (): MyRange {
@@ -89,7 +109,7 @@ export default class MyRange {
       colors: this.options.colors
     };
 
-    mount(model, this);
+    this.signal = mount(model, this);
 
     return this;
   }

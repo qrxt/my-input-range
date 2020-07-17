@@ -1,7 +1,10 @@
 export default interface Payload {
-  value?: number
-  percent?: number
+  value?: number,
+  percent?: number,
 
-  handleWidth?: number
+  min?: number,
+  max?: number,
+
+  handleWidth?: number,
   baseWidth?: number
 }
