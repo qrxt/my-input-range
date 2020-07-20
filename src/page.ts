@@ -29,8 +29,13 @@ const regularRange = new Range(rangeElemHorizontal, {
 
   arrowBtns: {
     left: {
-      className: "custom",
+      className: "page__arrow-btn page__arrow-btn--left",
       children: "<"
+    },
+
+    right: {
+      className: "page__arrow-btn page__arrow-btn--right",
+      children: ">"
     }
   },
 

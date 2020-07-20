@@ -45,13 +45,37 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     colors: model.colors,
   });
 
-  const hasArrowBtnLeft = Boolean(model.arrowBtns);
-  const arrowBtnLeft = hasArrowBtnLeft
+  const arrowBtnLeft = model.arrowBtns && model.arrowBtns.left
     ? btnArrow(
-      model.arrowBtns.left.className,
+      "left",
+      {
+        className: model.arrowBtns.left.className,
+        signal: signal,
+
+        min: model.min,
+        max: model.max,
+        pos: model.value,
+        step: model.step,
+      },
       model.arrowBtns.left.children
     )
     : null;
+
+    const arrowBtnRight = model.arrowBtns && model.arrowBtns.right
+      ? btnArrow(
+        "right",
+        {
+          className: model.arrowBtns.right.className,
+          signal: signal,
+
+          min: model.min,
+          max: model.max,
+          pos: model.value,
+          step: model.step,
+        },
+        model.arrowBtns.right.children
+      )
+      : null;
 
 
   root.append(
@@ -79,6 +103,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
         },
         handle.init()
       )
-    )
+    ),
+    arrowBtnRight
   );
 };

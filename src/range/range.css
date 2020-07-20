@@ -9,6 +9,8 @@
 /* Range Container */
 
 .range {
+  display: flex;
+  align-items: center;
   width: 100%;
   height: 100%;
 }
@@ -50,4 +52,39 @@
   height: 15px;
   top: 0;
   left: -8px;
+}
+
+/* Outer Components */
+
+/* Arrow Btns */
+
+.range__btn-arrow {
+  border: 1px solid #000000;
+  border-radius: 5px;
+  background-color: transparent;
+
+  font-weight: 700;
+
+  transition: 200ms opacity ease;
+
+  cursor: pointer;
+}
+
+.range__btn-arrow--left {
+  margin-right: 5px;
+}
+
+.range__btn-arrow--right {
+  margin-left: 5px;
+}
+
+.range__btn-arrow:focus,
+.range__btn-arrow:hover {
+  outline: none;
+
+  opacity: 0.6;
+}
+
+.range__btn-arrow:active {
+  opacity: 0.3;
 }
