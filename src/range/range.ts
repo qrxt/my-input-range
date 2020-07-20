@@ -65,6 +65,8 @@ export default class MyRange {
       onPress: null,
       onResize: null,
 
+      arrowBtns: null,
+
       colors: null,
 
       ...options
@@ -102,6 +104,8 @@ export default class MyRange {
       onLoad: this.options.onLoad,
       onPress: this.options.onPress,
       onResize: this.options.onResize,
+
+      arrowBtns: this.options.arrowBtns,
 
       baseWidth: null,
       handleWidth: null,

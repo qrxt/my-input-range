@@ -27,6 +27,13 @@ const regularRange = new Range(rangeElemHorizontal, {
     "rgba(200, 10, 180, 0.4)"
   ],
 
+  arrowBtns: {
+    left: {
+      className: "custom",
+      children: "<"
+    }
+  },
+
   onResize: (entry, name) => {
     console.log(entry, name)
   },
@@ -76,37 +83,42 @@ new Range(rangeElemVertical, {
 
 const palette = $(".page__color");
 
-const setPaletteColor = (color: string, value: number): void => {
-  const bgColorString = palette.css("background-color");
+const toHex = (dec: number): string => {
+  const hex = dec.toString(16);
 
-  const regexp = /rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/u;
-  const match = regexp.exec(bgColorString);
+  return hex.length === 1
+    ? `0${ hex }`
+    : hex;
+};
 
-  const red = match[1];
-  const green = match[2];
-  const blue = match[3];
+const toDec = (hex: string) =>
+  parseInt(hex, 16);
 
-  const updatedColorResults: { [key: string]: string } = {
-    red: `rgb(${ value }, ${ green }, ${ blue })`,
-    green: `rgb(${ red }, ${ value }, ${ blue })`,
-    blue: `rgb(${ red }, ${ green }, ${ value })`
+const updatePaletteColor = (values: Array<number>, name: string): void => {
+  const value = toHex(values[0]);
+  const colorName = name.split("-")[2];
+  const paletteColor = palette.val().toString();
+
+  const paletteColorRed = paletteColor.slice(1, 3);
+  const paletteColorGreen = paletteColor.slice(3, 5);
+  const paletteColorBlue = paletteColor.slice(5, 7);
+
+  const colorResults: { [key: string]: string } = {
+    red: `#${ value }${ paletteColorGreen }${ paletteColorBlue }`,
+    green: `#${ paletteColorRed }${ value }${ paletteColorBlue }`,
+    blue: `#${ paletteColorRed }${ paletteColorGreen }${ value }`,
   };
 
-  palette.css({
-    backgroundColor: updatedColorResults[color],
-    boxShadow: `0 0 10px ${ updatedColorResults[color] }`
-  });
+  console.log(values);
+
+  palette.val(
+    colorResults[colorName]
+  );
 };
 
 const redColor = [ "#c0392b", "#ff9287" ];
 const greenColor = [ "#27ae60", "#6fd39b" ];
 const blueColor = [ "#2980b9", "#72b0d9" ];
-
-const updatePalette = (values: Array<number>, name: string) => {
-  const color = name.split("-")[2];
-
-  setPaletteColor(color, values[0]);
-};
 
 const defaultColorRangeOptions = {
   vertical: true,
@@ -114,8 +126,8 @@ const defaultColorRangeOptions = {
   min: 0,
   max: 255,
 
-  onSlide: updatePalette,
-  onLoad: updatePalette,
+  onSlide: updatePaletteColor,
+  onLoad: updatePaletteColor,
 
   value: 127
 }
@@ -138,3 +150,15 @@ const rangeBlue = new Range(rangeElemBlue, {
 
 [ rangeRed, rangeGreen, rangeBlue ]
   .forEach(range => range.init());
+
+palette.on("change", () => {
+  const newColor = palette.val().toString();
+
+  const red = toDec(newColor.slice(1, 3));
+  const green = toDec(newColor.slice(3, 5));
+  const blue = toDec(newColor.slice(5, 7));
+
+  rangeRed.set(red);
+  rangeGreen.set(green);
+  rangeBlue.set(blue);
+});

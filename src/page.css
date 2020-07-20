@@ -38,6 +38,7 @@
 .page__color {
   width: 150px;
   height: 150px;
+  padding: 0;
   border: 2px solid white;
   background-color: rgb(255, 255, 255);
   box-shadow: 0 0 10px;

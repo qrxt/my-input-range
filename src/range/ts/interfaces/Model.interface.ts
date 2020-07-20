@@ -1,3 +1,7 @@
+// Interfaces
+
+import ArrowBtns from "@interfaces/ArrowBtns.interface";
+
 // Types
 
 import OnChange from "@type/OnChange.type";
@@ -25,6 +29,8 @@ export default interface Model {
   onLoad?: OnLoad,
   onPress?: OnPress,
   onResize?: OnResize,
+
+  arrowBtns?: null | ArrowBtns,
 
   handleWidth: number | null,
   baseWidth: number | null,

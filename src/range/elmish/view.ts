@@ -6,6 +6,7 @@ import Model from "@interfaces/Model.interface";
 
 import range from "@elements/range";
 import base from "@elements/base";
+import btnArrow from "@elements/btn-arrow";
 import Handle from "@elements/handle";
 
 // Types
@@ -44,7 +45,17 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     colors: model.colors,
   });
 
+  const hasArrowBtnLeft = Boolean(model.arrowBtns);
+  const arrowBtnLeft = hasArrowBtnLeft
+    ? btnArrow(
+      model.arrowBtns.left.className,
+      model.arrowBtns.left.children
+    )
+    : null;
+
+
   root.append(
+    arrowBtnLeft,
     range(
       {
         name: model.name,

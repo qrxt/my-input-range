@@ -1,3 +1,8 @@
+// Interfaces
+
+import ArrowBtns from "@interfaces/ArrowBtns.interface";
+
+
 // Types
 
 import Signal from "@type/Signal.type";
@@ -28,6 +33,8 @@ export default interface Props {
   onLoad?: OnLoad,
   onPress?: OnPress,
   onResize?: OnResize,
+
+  arrowBtns?: null | ArrowBtns,
 
   colors?: Array<string>
 }

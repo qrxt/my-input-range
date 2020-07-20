@@ -1,3 +1,7 @@
+// Interfaces
+
+import ArrowBtns from "@interfaces/ArrowBtns.interface";
+
 // Types
 
 import OnChange from "@type/OnChange.type";
@@ -23,6 +27,8 @@ export default interface Options {
   onLoad?: OnLoad,
   onPress?: OnPress,
   onResize?: OnResize,
+
+  arrowBtns?: null | ArrowBtns,
 
   colors?: Array<string>
 }
