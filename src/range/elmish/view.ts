@@ -18,8 +18,6 @@ const empty = (node: JQuery<HTMLElement>): void => {
 };
 
 export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void => {
-  empty(root);
-
   const handle = new Handle({
     name: model.name,
 
@@ -61,49 +59,51 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     )
     : null;
 
-    const arrowBtnRight = model.arrowBtns && model.arrowBtns.right
-      ? btnArrow(
-        "right",
-        {
-          className: model.arrowBtns.right.className,
-          signal: signal,
-
-          min: model.min,
-          max: model.max,
-          pos: model.value,
-          step: model.step,
-        },
-        model.arrowBtns.right.children
-      )
-      : null;
-
-
-  root.append(
-    arrowBtnLeft,
-    range(
+  const arrowBtnRight = model.arrowBtns && model.arrowBtns.right
+    ? btnArrow(
+      "right",
       {
-        name: model.name,
-
+        className: model.arrowBtns.right.className,
         signal: signal,
-        className: "range",
 
-        width: model.baseWidth,
+        min: model.min,
+        max: model.max,
+        pos: model.value,
+        step: model.step,
+      },
+      model.arrowBtns.right.children
+    )
+    : null;
+
+  const rangeComponent = range(
+    {
+      name: model.name,
+
+      signal: signal,
+      className: `range ${ model.className }`,
+
+      width: model.baseWidth,
+      vertical: model.vertical,
+
+      onResize: model.onResize,
+    },
+    base(
+      {
+        className: "range__base",
+        colors: model.colors,
+
         vertical: model.vertical,
 
-        onResize: model.onResize,
+        percent: model.percent
       },
-      base(
-        {
-          className: "range__base",
-          colors: model.colors,
+      handle.init()
+    )
+  );
 
-          vertical: model.vertical,
-
-          percent: model.percent
-        },
-        handle.init()
-      )
-    ),
+  empty(root);
+  root.append(
+    arrowBtnLeft,
+    rangeComponent,
     arrowBtnRight
   );
 };

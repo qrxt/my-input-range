@@ -12,6 +12,7 @@ import OnPress from "@type/OnPress.type";
 import OnResize from "@type/OnResize.type";
 
 export default interface Model {
+  className?: string,
   name?: string,
 
   value?: number

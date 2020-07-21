@@ -80,8 +80,6 @@
 
 .range__btn-arrow:focus,
 .range__btn-arrow:hover {
-  outline: none;
-
   opacity: 0.6;
 }
 

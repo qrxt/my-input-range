@@ -49,6 +49,7 @@ export default class MyRange {
     this.signal = null;
     this.range = this.node.find("input[type='range']");
     this.options = normalize({
+      className: null,
       name: "range-nameless",
 
       min: 0,
@@ -89,6 +90,7 @@ export default class MyRange {
 
   init (): MyRange {
     const model: Model = {
+      className: this.options.className,
       name: this.options.name,
 
       value: this.value,

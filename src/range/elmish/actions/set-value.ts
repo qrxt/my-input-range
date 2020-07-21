@@ -12,7 +12,15 @@ import getStepsPosMap from "@utils/getStepsPosMap";
 
 export default (model: Model, payload: Payload): Model => {
   const { value } = payload;
-  const { handleWidth, baseWidth, min, max, step, vertical } = model;
+  const {
+    handleWidth,
+    baseWidth,
+    min,
+    max,
+    step,
+    vertical,
+    onChange
+  } = model;
 
   const stepIndexes = getStepIndexes(min, max, step);
   const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
@@ -22,6 +30,11 @@ export default (model: Model, payload: Payload): Model => {
     steps[value] + handleWidth / 2,
     baseWidth
   );
+
+  // Event on change
+  if (onChange) {
+    onChange([ value ]);
+  }
 
   return {
     ...model,

@@ -136,10 +136,10 @@ export default class Handle {
       // percent: currentPercentage
     });
 
-    // Event on change
-    if (onChange) {
-      onChange([ valueToSet ]);
-    }
+    // // Event on change
+    // if (onChange) {
+    //   onChange([ valueToSet ]);
+    // }
 
     $(document).off(EVT_MOVE);
     $(document).off(EVT_STOP);

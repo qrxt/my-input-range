@@ -29,6 +29,8 @@ export default
           const newValue = pos - step;
 
           signal(SetValue, { value: newValue });
+
+          $(".range__btn-arrow--left").focus();
         }
       });
     }
@@ -39,6 +41,8 @@ export default
           const newValue = pos + step;
 
           signal(SetValue, { value: newValue });
+
+          $(".range__btn-arrow--right").focus();
         }
       });
     }

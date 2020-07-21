@@ -12,6 +12,7 @@ import OnPress from "@type/OnPress.type";
 import OnResize from "@type/OnResize.type";
 
 export default interface Options {
+  className?: string,
   name?: string,
 
   min?: number,

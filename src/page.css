@@ -29,6 +29,12 @@
   height: 180px;
 }
 
+/* Horizontal Range */
+
+.page__range--horizontal .range__handle {
+  background-color: #9c75c1;
+}
+
 /* Input number */
 
 .page__input-number {

@@ -17,14 +17,16 @@ const rangeElemBlue = $(".js-range-example-blue");
 
 const inputNumber = $(".page__input-number");
 const regularRange = new Range(rangeElemHorizontal, {
+  className: "page__range-horizontal",
+
   min: 1,
   max: 10,
   step: 1,
   value: 5,
 
   colors: [
-    "rgba(0, 200, 180, 0.4)",
-    "rgba(200, 10, 180, 0.4)"
+    "#9C75C1",
+    "#A3478F"
   ],
 
   arrowBtns: {
@@ -113,8 +115,6 @@ const updatePaletteColor = (values: Array<number>, name: string): void => {
     green: `#${ paletteColorRed }${ value }${ paletteColorBlue }`,
     blue: `#${ paletteColorRed }${ paletteColorGreen }${ value }`,
   };
-
-  console.log(values);
 
   palette.val(
     colorResults[colorName]
