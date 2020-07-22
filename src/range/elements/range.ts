@@ -38,6 +38,7 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
       const widthsSub = Math.abs(width - afterResizeWidth);
       if (width && isRendered && widthsSub > threshold) {
         // Event on resize
+
         if (onResize) {
           onResize(entry.contentRect, name);
         }

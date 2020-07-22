@@ -22,11 +22,11 @@ const normalize = (options: Options): Options => {
     min,
     max,
     step,
-    value
+    from
   } = options;
 
   const stepsSum = Math.abs(min) + Math.abs(max);
-  const isValueOutOfBounds = (value < min || value > max);
+  const isValueOutOfBounds = (from < min || from > max);
   const isStepTooBig = step > stepsSum;
 
   return {
@@ -34,7 +34,7 @@ const normalize = (options: Options): Options => {
 
     max: max < min ? min + step : max,
     step: isStepTooBig ? stepsSum : step,
-    value: isValueOutOfBounds ? Math.round(stepsSum / 2) : value,
+    from: isValueOutOfBounds ? Math.round(stepsSum / 2) : from,
   };
 };
 
@@ -55,7 +55,8 @@ export default class MyRange {
       min: 0,
       max: 5,
       step: 1,
-      value: 3,
+      from: 3,
+      to: null,
 
       vertical: false,
 
@@ -75,17 +76,23 @@ export default class MyRange {
   }
 
   get value (): number {
-    return this.options.value;
+    return this.options.from;
   }
 
   set value (val: number) {
-    this.options.value = val;
+    this.options.from = val;
   }
 
-  public set (val: number): void {
-    this.signal(SetValue, {
-      value: val
-    });
+  public set (handle: "lower" | "upper", val: number): void {
+    if (handle === "lower") {
+      this.signal(SetValue, {
+        from: val
+      });
+    } else {
+      this.signal(SetValue, {
+        to: val
+      });
+    }
   }
 
   init (): MyRange {
@@ -93,7 +100,9 @@ export default class MyRange {
       className: this.options.className,
       name: this.options.name,
 
-      value: this.value,
+      from: this.options.from,
+      to: this.options.to,
+
       min: this.options.min,
       max: this.options.max,
       step: this.options.step,

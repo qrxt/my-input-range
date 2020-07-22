@@ -18,7 +18,7 @@ const empty = (node: JQuery<HTMLElement>): void => {
 };
 
 export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void => {
-  const handle = new Handle({
+  const handleLower = new Handle({
     name: model.name,
 
     className: "range__handle range__handle--lower",
@@ -26,7 +26,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
 
     min: model.min,
     max: model.max,
-    pos: model.value,
+    pos: model.from,
     step: model.step,
 
     vertical: model.vertical,
@@ -43,6 +43,30 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     colors: model.colors,
   });
 
+  const handleUpper = new Handle({
+    name: model.name,
+
+    className: "range__handle range__handle--upper",
+    signal: signal,
+
+    min: model.min,
+    max: model.max,
+    pos: model.to,
+    step: model.step,
+    vertical: model.vertical,
+
+    onChange: model.onChange,
+    onSlide: model.onSlide,
+    onDraw: model.onDraw,
+    onLoad: model.onLoad,
+    onPress: model.onPress,
+
+    handleWidth: model.handleWidth,
+    baseWidth: model.baseWidth,
+
+    colors: model.colors,
+  })
+
   const arrowBtnLeft = model.arrowBtns && model.arrowBtns.left
     ? btnArrow(
       "left",
@@ -52,7 +76,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
 
         min: model.min,
         max: model.max,
-        pos: model.value,
+        pos: model.from,
         step: model.step,
       },
       model.arrowBtns.left.children
@@ -68,7 +92,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
 
         min: model.min,
         max: model.max,
-        pos: model.value,
+        pos: model.from,
         step: model.step,
       },
       model.arrowBtns.right.children
@@ -96,7 +120,11 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
 
         percent: model.percent
       },
-      handle.init()
+      handleLower.init()
+    ).append(
+      model.to && model.baseWidth
+        ? handleUpper.init()
+        : null
     )
   );
 

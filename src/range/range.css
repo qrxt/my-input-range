@@ -47,6 +47,10 @@
   cursor: pointer;
 }
 
+.range__handle--upper {
+  background-color: rgb(230, 62, 62);
+}
+
 .range__handle--vertical {
   width: 25px;
   height: 15px;

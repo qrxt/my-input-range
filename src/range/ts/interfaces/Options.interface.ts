@@ -18,7 +18,9 @@ export default interface Options {
   min?: number,
   max?: number,
   step?: number,
-  value?: number,
+
+  from?: number,
+  to?: number | null,
 
   vertical?: boolean,
 

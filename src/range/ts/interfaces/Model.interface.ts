@@ -15,7 +15,8 @@ export default interface Model {
   className?: string,
   name?: string,
 
-  value?: number
+  from?: number,
+  to?: number | null,
   percent?: number,
 
   min?: number,

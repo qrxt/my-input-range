@@ -11,7 +11,7 @@ import getStepPositions from "@utils/getStepPositions";
 import getStepsPosMap from "@utils/getStepsPosMap";
 
 export default (model: Model, payload: Payload): Model => {
-  const { value } = payload;
+  const { from, to } = payload;
   const {
     handleWidth,
     baseWidth,
@@ -22,18 +22,30 @@ export default (model: Model, payload: Payload): Model => {
     onChange
   } = model;
 
+  const isFrom = typeof from === "number";
+  const isToo = typeof to === "number";
+
+  const valueToSet = isFrom ? from : to;
+  const updatedFrom = isFrom ? valueToSet : model.from;
+  const updatedTo = isToo ? valueToSet : model.to;
+
   const stepIndexes = getStepIndexes(min, max, step);
   const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
   const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
 
-  const percentage = calcPercentage(
-    steps[value] + handleWidth / 2,
-    baseWidth
-  );
+  const percentage = from
+    ? calcPercentage(
+      steps[from] + handleWidth / 2,
+      baseWidth
+    )
+    : calcPercentage(
+      steps[to] + handleWidth / 2,
+      baseWidth
+    );
 
   // Event on change
   if (onChange) {
-    onChange([ value ]);
+    onChange([ updatedFrom, updatedTo ]);
   }
 
   return {
@@ -42,6 +54,7 @@ export default (model: Model, payload: Payload): Model => {
     percent: vertical
       ? 100 - percentage
       : percentage,
-    value
+    from: updatedFrom,
+    to: updatedTo
   };
 };

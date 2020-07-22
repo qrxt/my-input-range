@@ -15,7 +15,7 @@ export default (model: Model, range: MyRange): Signal => {
   const signal: Signal = (action: string, payload?: Payload): void => {
     model = update(model, action, payload); // mut
 
-    range.value = model.value;
+    range.value = model.from;
 
     view(signal, model, range.node);
   };

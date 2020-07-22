@@ -28,7 +28,7 @@ export default
         if (pos - step >= min) {
           const newValue = pos - step;
 
-          signal(SetValue, { value: newValue });
+          signal(SetValue, { from: newValue });
 
           $(".range__btn-arrow--left").focus();
         }
@@ -40,7 +40,7 @@ export default
         if (pos + step <= max) {
           const newValue = pos + step;
 
-          signal(SetValue, { value: newValue });
+          signal(SetValue, { from: newValue });
 
           $(".range__btn-arrow--right").focus();
         }

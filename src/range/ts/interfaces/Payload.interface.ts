@@ -1,5 +1,7 @@
 export default interface Payload {
-  value?: number,
+  from?: number,
+  to?: number,
+
   percent?: number,
 
   min?: number,

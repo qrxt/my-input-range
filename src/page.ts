@@ -8,6 +8,7 @@ import "./page.css";
 
 const rangeElemHorizontal = $(".js-range-example-horizontal");
 const rangeElemVertical = $(".js-range-example-vertical");
+const rangeElemDouble = $(".js-range-example-double");
 
 const rangeElemRed = $(".js-range-example-red");
 const rangeElemGreen = $(".js-range-example-green");
@@ -22,7 +23,7 @@ const regularRange = new Range(rangeElemHorizontal, {
   min: 1,
   max: 10,
   step: 1,
-  value: 5,
+  from: 5,
 
   colors: [
     "#9C75C1",
@@ -53,7 +54,7 @@ const regularRange = new Range(rangeElemHorizontal, {
 inputNumber.on("change", () => {
   const inputValue = Number(inputNumber.val());
 
-  regularRange.set(inputValue);
+  regularRange.set("lower", inputValue);
 });
 
 // Vertical Example Range
@@ -64,7 +65,7 @@ new Range(rangeElemVertical, {
   min: 2,
   max: 6,
   step: 1,
-  value: 4,
+  from: 4,
 
   vertical: true,
 
@@ -134,7 +135,7 @@ const defaultColorRangeOptions = {
   onSlide: updatePaletteColor,
   onLoad: updatePaletteColor,
 
-  value: 127
+  from: 127
 }
 
 const rangeRed = new Range(rangeElemRed, {
@@ -163,7 +164,23 @@ palette.on("change", () => {
   const green = toDec(newColor.slice(3, 5));
   const blue = toDec(newColor.slice(5, 7));
 
-  rangeRed.set(red);
-  rangeGreen.set(green);
-  rangeBlue.set(blue);
+  rangeRed.set("lower", red);
+  rangeGreen.set("lower", green);
+  rangeBlue.set("lower", blue);
 });
+
+// Double Example Range
+
+const doubleRange = new Range(rangeElemDouble, {
+  min: 0,
+  max: 100,
+
+  from: 50,
+  to: 70,
+
+  onChange: (values) => {
+    console.log(values);
+  }
+});
+
+doubleRange.init();

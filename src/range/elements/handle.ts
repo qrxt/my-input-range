@@ -117,7 +117,7 @@ export default class Handle {
       handleWidth,
       baseWidth,
       vertical,
-      onChange,
+      onChange, /***/ className /***/,
       min, max, step
     } = this.props;
     const stepIndexes = getStepIndexes(min, max, step);
@@ -131,15 +131,17 @@ export default class Handle {
 
     const valueToSet = steps[closest];
 
-    signal(SetValue, {
-      value: valueToSet,
-      // percent: currentPercentage
-    });
-
-    // // Event on change
-    // if (onChange) {
-    //   onChange([ valueToSet ]);
-    // }
+    //
+    if (className.includes("upper")) {
+      signal(SetValue, {
+        to: valueToSet
+      });
+    } else {
+      signal(SetValue, {
+        from: valueToSet
+      });
+    }
+    //
 
     $(document).off(EVT_MOVE);
     $(document).off(EVT_STOP);
@@ -204,7 +206,7 @@ export default class Handle {
       handleWidth,
       vertical,
       onLoad,
-      name,
+      name, className,
       min, max, step
     } = this.props;
     const stepIndexes = getStepIndexes(min, max, step);
@@ -231,6 +233,8 @@ export default class Handle {
 
     if (!baseWidth) {
       this.moveTo(currentStepCoord);
+
+      console.log(this.handle.width(), className, this.handleWidth, this.baseWidth)
 
       signal(SetSizes, {
         handleWidth: this.handleWidth,
