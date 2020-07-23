@@ -180,7 +180,9 @@ const doubleRange = new Range(rangeElemDouble, {
 
   onChange: (values) => {
     console.log(values);
-  }
+  },
+
+  colors: [ "green" ]
 });
 
 doubleRange.init();

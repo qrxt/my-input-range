@@ -29,6 +29,8 @@ const EVT_START = "mousedown.range.handle touchstart.range.handle";
 const EVT_DRAGSTART = "dragstart.range.handle";
 const EVT_KEYDOWN = "keydown.range.handle";
 
+const isUpper = (className: string): boolean => className.includes("upper");
+
 export default class Handle {
   props: HandleProps
   handle: JQuery<HTMLElement>
@@ -65,10 +67,13 @@ export default class Handle {
   private _onMove (evt: JQuery.Event): void {
     const {
       handleWidth,
-      baseWidth, vertical,
-      onSlide, name,
+      baseWidth,
+      vertical,
+      onSlide, className,
+      name, allowedMax, allowedMin,
       min, max, step
     } = this.props;
+
     const stepIndexes = getStepIndexes(min, max, step);
     const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
     const steps = getStepsPosMap(stepIndexes, stepPositions, vertical, true);
@@ -91,6 +96,10 @@ export default class Handle {
       ? 100 - percentage
       : percentage;
 
+    if (isUpper(className) && closestValue >= allowedMin || closestValue <= allowedMax) {
+      this.moveTo(closestStepCoord);
+    }
+
     // Gradient on move
     setBgGradient(
       this.handle.parent(),
@@ -98,8 +107,6 @@ export default class Handle {
       currentPercentage,
       vertical
     );
-
-    this.moveTo(closestStepCoord);
 
     // Event on slide
     if (onSlide) {
@@ -117,7 +124,7 @@ export default class Handle {
       handleWidth,
       baseWidth,
       vertical,
-      onChange, /***/ className /***/,
+      className,
       min, max, step
     } = this.props;
     const stepIndexes = getStepIndexes(min, max, step);
@@ -131,8 +138,7 @@ export default class Handle {
 
     const valueToSet = steps[closest];
 
-    //
-    if (className.includes("upper")) {
+    if (isUpper(className)) {
       signal(SetValue, {
         to: valueToSet
       });
@@ -141,7 +147,6 @@ export default class Handle {
         from: valueToSet
       });
     }
-    //
 
     $(document).off(EVT_MOVE);
     $(document).off(EVT_STOP);
@@ -233,8 +238,6 @@ export default class Handle {
 
     if (!baseWidth) {
       this.moveTo(currentStepCoord);
-
-      console.log(this.handle.width(), className, this.handleWidth, this.baseWidth)
 
       signal(SetSizes, {
         handleWidth: this.handleWidth,

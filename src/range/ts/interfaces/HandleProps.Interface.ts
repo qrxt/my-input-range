@@ -7,6 +7,9 @@ export default interface HandleProps extends Props {
   min?: number,
   max?: number,
 
+  allowedMin?: number,
+  allowedMax?: number,
+
   handleWidth: number | null,
   baseWidth: number | null
 }

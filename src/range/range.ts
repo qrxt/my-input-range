@@ -84,13 +84,23 @@ export default class MyRange {
   }
 
   public set (handle: "lower" | "upper", val: number): void {
+    const { from, to } = this.options;
+
     if (handle === "lower") {
+      const fixedFrom = val <= to
+        ? val
+        : to;
+
       this.signal(SetValue, {
-        from: val
+        from: fixedFrom
       });
-    } else {
+    } else if (handle === "upper") {
+      const fixedTo = val >= from
+        ? val
+        : from;
+
       this.signal(SetValue, {
-        to: val
+        to: fixedTo
       });
     }
   }

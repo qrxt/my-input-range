@@ -13,7 +13,7 @@ const buildColorStopsString = (colors: Array<string>, percent: number): string =
     .join("\n");
 
 
-export default (elem: JQuery<HTMLElement>, colors: Array<string>, percent: number, vertical = false): void => {
+export default (elem: JQuery<HTMLElement>, colors: Array<string>, percent: number, vertical: boolean): void => {
   if (!colors) {
     return;
   }

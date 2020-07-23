@@ -29,6 +29,8 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     pos: model.from,
     step: model.step,
 
+    allowedMax: model.to,
+
     vertical: model.vertical,
 
     onChange: model.onChange,
@@ -53,6 +55,9 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     max: model.max,
     pos: model.to,
     step: model.step,
+
+    allowedMin: model.from,
+
     vertical: model.vertical,
 
     onChange: model.onChange,
