@@ -15,6 +15,10 @@
   height: 100%;
 }
 
+.range--vertical {
+  min-height: 100px;
+}
+
 /* Range Base */
 
 .range__base {
@@ -28,6 +32,7 @@
 
 .range__base--vertical {
   width: 10px;
+  min-height: 100px;
   height: 100%;
 }
 

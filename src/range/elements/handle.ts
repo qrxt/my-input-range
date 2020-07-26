@@ -29,7 +29,8 @@ const EVT_START = "mousedown.range.handle touchstart.range.handle";
 const EVT_DRAGSTART = "dragstart.range.handle";
 const EVT_KEYDOWN = "keydown.range.handle";
 
-const isUpper = (className: string): boolean => className.includes("upper");
+const isUpper = (className: string): boolean =>
+  className.includes("upper");
 
 export default class Handle {
   props: HandleProps
@@ -88,10 +89,7 @@ export default class Handle {
       evt.stopPropagation();
     }
 
-    const percentage = calcPercentage(
-      this.offset + this.handleWidth / 2,
-      baseWidth
-    );
+    const percentage = calcPercentage(closestStepCoord, baseWidth);
     const currentPercentage = vertical
       ? 100 - percentage
       : percentage;
@@ -99,21 +97,21 @@ export default class Handle {
     const closestValueMoreThanLower = closestValue >= allowedMin;
     const closestValueLessThanUpper = closestValue <= allowedMax
 
-    if (isUpper(className) && closestValueMoreThanLower || closestValueLessThanUpper) {
-      this.moveTo(closestStepCoord);
-    }
-
     const currentPercentages = isUpper(className)
       ? [ percentages[0], currentPercentage ]
       : [ currentPercentage, percentages[1] ];
 
-    // Gradient on move
-    setBgGradient(
-      this.handle.parent(),
-      this.props.colors,
-      currentPercentages,
-      vertical
-    );
+    if (isUpper(className) && closestValueMoreThanLower || closestValueLessThanUpper) {
+      this.moveTo(closestStepCoord);
+
+      // Gradient on move
+      setBgGradient(
+        this.handle.parent(),
+        this.props.colors,
+        currentPercentages,
+        vertical
+      );
+    }
 
     // Event on slide
     if (onSlide) {
@@ -203,8 +201,6 @@ export default class Handle {
 
     if (!baseWidth) {
       this.moveTo(currentStepCoord);
-
-      // console.log("init");
 
       signal(Init, {
         handleWidth: this.handleWidth,

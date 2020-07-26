@@ -24,8 +24,11 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
     name
   } = props;
 
+  const verticalClassname = vertical ? "range--vertical" : null;
+  const modifiedClassname = `${ className } ${ verticalClassname }`;
+
   const range = div({
-    className
+    className: modifiedClassname
   }, children);
 
   const observer: ResizeObserver = new ResizeObserver((entries) => {

@@ -26,7 +26,6 @@ const buildDoubleGradientString = (colors: Array<string>, from: number, to: numb
     }
 
     if (idx === lastIdx) {
-      console.log(color);
       return `${ color } ${ to }%`
     }
 
