@@ -13,7 +13,7 @@ import setBgGradient from "@utils/setBgGradient";
 export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLElement> => {
   const {
     className,
-    percent,
+    percentages,
     colors,
     vertical
   } = props;
@@ -22,16 +22,21 @@ export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLEle
     ? `${ className } range__base--vertical`
     : className;
 
+  // console.log(modifiedClassName);
+
   const base = div({
     className: modifiedClassName
   }, children);
 
-  setBgGradient(
-    base,
-    colors,
-    percent,
-    vertical
-  )
+  // Gradient on load
+  if (percentages && percentages.length) {
+    setBgGradient(
+      base,
+      colors,
+      percentages,
+      vertical
+    );
+  }
 
   return base;
 }

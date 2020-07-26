@@ -172,15 +172,15 @@ palette.on("change", () => {
 // Double Example Range
 
 const doubleRange = new Range(rangeElemDouble, {
+  name: "range-double",
+
   min: 0,
   max: 100,
 
   from: 50,
   to: 70,
 
-  onChange: (values) => {
-    console.log(values);
-  },
+  onChange: (vals) => console.log(vals),
 
   colors: [ "green" ]
 });

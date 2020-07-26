@@ -23,7 +23,7 @@ export default interface Props {
 
   className?: string
 
-  percent?: number,
+  percentages?: Array<number>,
 
   step?: number,
 

@@ -1,7 +1,7 @@
 enum ActionsEnum {
   SetValue = "SET_VALUE",
   SetModel = "SET_MODEL",
-  SetSizes = "SET_SIZES",
+  Init = "INIT",
   Redraw = "REDRAW",
   SetBaseWidth = "SET_BASEWIDTH"
 }

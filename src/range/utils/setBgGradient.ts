@@ -1,9 +1,11 @@
-const buildColorStopsString = (colors: Array<string>, percent: number): string =>
+const buildColorStopsString = (colors: Array<string>, fromPercentage: number, toPercentage?: number): string =>
   colors
     .map((color, idx): string => {
-      const currentPercentage = (percent / (colors.length - 1)) * idx;
+      const currentPercentage = (fromPercentage / (colors.length - 1)) * idx;
 
-      if (idx === colors.length - 1) {
+      const lastIdx = colors.length - 1;
+
+      if (idx === lastIdx) {
         return `${ color } ${ currentPercentage }%,
         transparent ${ currentPercentage }%`
       }
@@ -12,30 +14,77 @@ const buildColorStopsString = (colors: Array<string>, percent: number): string =
     })
     .join("\n");
 
+const buildDoubleGradientString = (colors: Array<string>, from: number, to: number): string => {
+  const map = colors.map((color, idx): string => {
+    const lastIdx = colors.length - 1;
+    const percentagesDifference = to - from;
+    const distanceBetweenColors = percentagesDifference / (colors.length - 1) * idx;
 
-export default (elem: JQuery<HTMLElement>, colors: Array<string>, percent: number, vertical: boolean): void => {
+    if (idx === 0) {
+
+      return `${ color } ${ from }%,`
+    }
+
+    if (idx === lastIdx) {
+      console.log(color);
+      return `${ color } ${ to }%`
+    }
+
+    return `${ color } ${ from + distanceBetweenColors }%,`;
+  })
+
+  return `transparent 0%,
+    transparent ${ from }%,
+    ${ map.join("\n") },
+    transparent ${ to }%
+  `;
+};
+
+export default (elem: JQuery<HTMLElement>, colors: Array<string>, percentages: Array<number>, isVertical: boolean): void => {
   if (!colors) {
     return;
   }
 
-  const gradientDirection = vertical
+  const fromPercentage = percentages[0];
+  const toPercentage = percentages[1];
+
+  const gradientDirection = isVertical
     ? "to top"
-    : "to right"
+    : "to right";
 
   const gradientString = colors.length > 1
-  ?  `linear-gradient(${ gradientDirection },
-    ${ buildColorStopsString(colors, percent) }
+  ? `linear-gradient(${ gradientDirection },
+    ${ buildColorStopsString(colors, fromPercentage, toPercentage) }
   )`
-  : `linear-gradient(${ gradientDirection },
+  : `linear-gradient(
+    ${ gradientDirection },
     ${ colors[0] } 0%,
-    ${ colors[0] } ${ percent }%,
-    transparent ${ percent }%
-  )`
+    ${ colors[0] } ${ fromPercentage }%,
+    transparent ${ fromPercentage }%
+  )`;
 
-  // ! check if more than 1 handle
+  const doubleGradientString = colors.length > 1
+    ? `linear-gradient(
+      ${ gradientDirection },
+      ${ buildDoubleGradientString(colors, fromPercentage, toPercentage) }
+    )`
+    : `linear-gradient(
+      ${ gradientDirection },
+      transparent 0%,
+      transparent ${ fromPercentage }%,
+      ${ colors[0] } ${ fromPercentage }%,
+      ${ colors[0] } ${ toPercentage }%,
+      transparent ${ toPercentage }%
+    )`;
 
-  elem
-    .css({
-      background: gradientString,
-    });
+  if (typeof toPercentage === "number") {
+    elem.css({
+      background: doubleGradientString
+    })
+  } else {
+    elem
+      .css({
+        background: gradientString,
+      });
+  }
 };

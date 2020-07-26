@@ -21,6 +21,7 @@ export default interface Options {
 
   from?: number,
   to?: number | null,
+  percentages?: Array<number>,
 
   vertical?: boolean,
 

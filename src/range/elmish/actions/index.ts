@@ -1,6 +1,6 @@
 import setValue from "./set-value";
 import setModel from "./set-model";
-import setSizes from "./set-sizes";
+import init from "./init";
 import setBaseWidth from "./set-basewidth";
 import redraw from "./redraw";
 
@@ -11,7 +11,7 @@ import ActionsEnum from "@enums/ActionsEnum.enums";
 const {
   SetValue,
   SetModel,
-  SetSizes,
+  Init,
   Redraw,
   SetBaseWidth
 } = ActionsEnum;
@@ -23,7 +23,7 @@ interface Actions {
 const actions: Actions = {
   [ SetValue ]: setValue,
   [ SetModel ]: setModel,
-  [ SetSizes ]: setSizes,
+  [ Init ]: init,
   [ Redraw ]: redraw,
   [ SetBaseWidth ]: setBaseWidth,
 };

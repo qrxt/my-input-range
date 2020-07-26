@@ -6,7 +6,7 @@ import HandleProps from "@interfaces/HandleProps.interface";
 
 import ActionsEnum from "@enums/ActionsEnum.enums";
 
-const { SetValue, SetSizes } = ActionsEnum;
+const { SetValue, Init } = ActionsEnum;
 
 // Elements
 
@@ -68,7 +68,7 @@ export default class Handle {
     const {
       handleWidth,
       baseWidth,
-      vertical,
+      vertical, percentages,
       onSlide, className,
       name, allowedMax, allowedMin,
       min, max, step
@@ -96,15 +96,22 @@ export default class Handle {
       ? 100 - percentage
       : percentage;
 
-    if (isUpper(className) && closestValue >= allowedMin || closestValue <= allowedMax) {
+    const closestValueMoreThanLower = closestValue >= allowedMin;
+    const closestValueLessThanUpper = closestValue <= allowedMax
+
+    if (isUpper(className) && closestValueMoreThanLower || closestValueLessThanUpper) {
       this.moveTo(closestStepCoord);
     }
+
+    const currentPercentages = isUpper(className)
+      ? [ percentages[0], currentPercentage ]
+      : [ currentPercentage, percentages[1] ];
 
     // Gradient on move
     setBgGradient(
       this.handle.parent(),
       this.props.colors,
-      currentPercentage,
+      currentPercentages,
       vertical
     );
 
@@ -154,19 +161,11 @@ export default class Handle {
 
   private _onPress (evt: JQuery.Event): void {
     const {
-      colors,
       pos,
-      baseWidth,
-      handleWidth,
-      vertical,
       name,
       onPress,
-      min, max, step
     } = this.props;
     const { _onMove, _onStop } = this;
-    const stepIndexes = getStepIndexes(min, max, step);
-    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
-    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
 
     evt.stopPropagation();
 
@@ -180,66 +179,34 @@ export default class Handle {
       _onStop.bind(this)
     );
 
-    const percentage = calcPercentage(
-      steps[pos] + handleWidth / 2,
-      baseWidth
-    );
-    const currentPercentage = vertical
-      ? 100 - percentage
-      : percentage;
-
     // Event on press
     if (onPress) {
       onPress([ pos ], name, this.handle);
     }
-
-    // Gradient on press
-    setBgGradient(
-      this.handle.parent(),
-      colors,
-      currentPercentage,
-      vertical
-    );
   }
 
   private _onPageReady (): void {
     const {
       signal,
-      colors,
       pos,
       baseWidth,
       handleWidth,
       vertical,
       onLoad,
-      name, className,
+      name,
       min, max, step
     } = this.props;
     const stepIndexes = getStepIndexes(min, max, step);
     const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
     const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
-
     const currentStepCoord = steps[pos];
-
-    const percentage = calcPercentage(
-      currentStepCoord + (handleWidth / 2),
-      baseWidth
-    );
-    const currentPercentage = vertical
-      ? 100 - percentage
-      : percentage;
-
-    // Gradient on page load
-    setBgGradient(
-      this.handle.parent(),
-      colors,
-      currentPercentage,
-      vertical
-    );
 
     if (!baseWidth) {
       this.moveTo(currentStepCoord);
 
-      signal(SetSizes, {
+      // console.log("init");
+
+      signal(Init, {
         handleWidth: this.handleWidth,
         baseWidth: this.baseWidth,
       });

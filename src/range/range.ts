@@ -59,6 +59,7 @@ export default class MyRange {
       to: null,
 
       vertical: false,
+      percentages: [],
 
       onChange: null,
       onSlide: null,
@@ -86,21 +87,29 @@ export default class MyRange {
   public set (handle: "lower" | "upper", val: number): void {
     const { from, to } = this.options;
 
-    if (handle === "lower") {
-      const fixedFrom = val <= to
-        ? val
-        : to;
+    const isRange = typeof to === "number";
 
-      this.signal(SetValue, {
-        from: fixedFrom
-      });
-    } else if (handle === "upper") {
-      const fixedTo = val >= from
-        ? val
-        : from;
+    if (isRange) {
+      if (handle === "lower") {
+        const fixedFrom = val <= to
+          ? val
+          : to;
 
+        this.signal(SetValue, {
+          from: fixedFrom
+        });
+      } else if (handle === "upper") {
+        const fixedTo = val >= from
+          ? val
+          : from;
+
+        this.signal(SetValue, {
+          to: fixedTo
+        });
+      }
+    } else {
       this.signal(SetValue, {
-        to: fixedTo
+        from: val
       });
     }
   }

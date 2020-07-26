@@ -29,9 +29,13 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     pos: model.from,
     step: model.step,
 
-    allowedMax: model.to,
+    allowedMax: typeof model.to === "number"
+      ? model.to
+      : model.max,
 
     vertical: model.vertical,
+
+    percentages: model.percentages,
 
     onChange: model.onChange,
     onSlide: model.onSlide,
@@ -56,9 +60,13 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
     pos: model.to,
     step: model.step,
 
-    allowedMin: model.from,
+    allowedMin: typeof model.from === "number"
+      ? model.from
+      : model.min,
 
     vertical: model.vertical,
+
+    percentages: model.percentages,
 
     onChange: model.onChange,
     onSlide: model.onSlide,
@@ -123,7 +131,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
 
         vertical: model.vertical,
 
-        percent: model.percent
+        percentages: model.percentages
       },
       handleLower.init()
     ).append(

@@ -17,7 +17,7 @@ export default interface Model {
 
   from?: number,
   to?: number | null,
-  percent?: number,
+  percentages?: Array<number>,
 
   min?: number,
   max?: number,
