@@ -8,7 +8,7 @@ import Props from "@interfaces/Props.interface";
 
 import ActionsEnum from "@enums/ActionsEnum.enums";
 
-const { SetBaseWidth } = ActionsEnum;
+const { SetBaseWidth, Init } = ActionsEnum;
 
 // Elements
 
@@ -21,7 +21,9 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
     width,
     vertical,
     onResize,
-    name
+    name,
+
+    handleWidth
   } = props;
 
   const verticalClassname = vertical ? "range--vertical" : null;
@@ -45,7 +47,10 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
           onResize(entry.contentRect, name);
         }
 
-        signal(SetBaseWidth, { baseWidth: afterResizeWidth })
+        signal(Init, {
+          handleWidth: handleWidth,
+          baseWidth: afterResizeWidth
+        })
       }
     }
   });

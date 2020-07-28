@@ -120,6 +120,7 @@ export default (signal: Signal, model: Model, root: JQuery<HTMLElement>): void =
       className: `range ${ model.className }`,
 
       width: model.baseWidth,
+      handleWidth: model.handleWidth, //
       vertical: model.vertical,
 
       onResize: model.onResize,

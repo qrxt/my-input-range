@@ -25,6 +25,10 @@ export default interface Props {
 
   percentages?: Array<number>,
 
+  //
+  handleWidth?: number,
+  //
+
   step?: number,
 
   onChange?: OnChange,

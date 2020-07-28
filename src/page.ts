@@ -182,7 +182,7 @@ const doubleRange = new Range(rangeElemDouble, {
 
   onChange: (vals) => console.log(vals),
 
-  colors: [ "green" ]
+  colors: [ "green", "yellow" ]
 });
 
 doubleRange.init();
