@@ -19,8 +19,9 @@
   },
   "include": [
     "./src/**/*",
-    "src/index.ts",
+    "./src/index.ts",
     "./webpack.config.js",
-    "./tests/**/*"
+    "./jest.config.js",
+    "__tests__/**/*"
   ],
 }
