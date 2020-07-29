@@ -9,6 +9,7 @@ import div from "@elements/div";
 // Utils
 
 import setBgGradient from "@utils/setBgGradient";
+import getStripedGradientString from "@utils/getStripedGradientString";
 
 export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLElement> => {
   const {
@@ -30,12 +31,24 @@ export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLEle
 
   // Gradient on load
   if (percentages && percentages.length) {
+    const direction = vertical
+      ? "to top"
+      : "to right";
+
     setBgGradient(
       base,
       colors,
       percentages,
       vertical
     );
+
+    console.log(
+      getStripedGradientString(
+        direction,
+        colors,
+        percentages
+      )
+    )
   }
 
   return base;

@@ -22,6 +22,7 @@ import findClosestInArray from "@utils/findClosestInArray";
 import getStepIndexes from "@utils/getStepIndexes";
 import getStepPositions from "@utils/getStepPositions";
 import getStepsPosMap from "@utils/getStepsPosMap";
+import getStripedGradientString from "@utils/getStripedGradientString";
 
 const EVT_MOVE = "mousemove.range.handle touchmove.range.handle";
 const EVT_STOP = "mouseup.range.handle touchend.range.handle";
