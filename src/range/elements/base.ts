@@ -35,20 +35,22 @@ export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLEle
       ? "to top"
       : "to right";
 
-    setBgGradient(
-      base,
+    // setBgGradient(
+    //   base,
+    //   colors,
+    //   percentages,
+    //   vertical
+    // );
+
+    const gradient = getStripedGradientString(
+      direction,
       colors,
-      percentages,
-      vertical
+      percentages
     );
 
-    console.log(
-      getStripedGradientString(
-        direction,
-        colors,
-        percentages
-      )
-    )
+    base.css({
+      background: gradient
+    })
   }
 
   return base;

@@ -31,16 +31,22 @@ describe("Utils: setBgGradient", () => {
     colors: [ "yellow", "magenta", "green", "red" ],
     stops: [ 59, 67 ]
   };
+  // set with vertical orientation
+  const set5 = {
+    direction: "to top" as Direction,
+    colors: [ "green" ],
+    stops: [ 17 ]
+  };
 
   test("Should work with single color and single stop value", () => {
-    const expected = "linear-gradient(to right, #ffe100 52%, transparent 52%);";
+    const expected = "linear-gradient(to right, #ffe100 52%, transparent 52%)";
 
     expect(getStripedGradientString(set1.direction, set1.colors, set1.stops))
       .toBe(expected);
   });
 
   test("Should work with single stop value and two colors", () => {
-    const expected = "linear-gradient(to right, #23ff00 0%, #ffe100 43%, transparent 43%);";
+    const expected = "linear-gradient(to right, #23ff00 0%, #ffe100 43%, transparent 43%)";
 
     expect(getStripedGradientString(set2.direction, set2.colors, set2.stops))
       .toBe(expected);
@@ -53,7 +59,7 @@ describe("Utils: setBgGradient", () => {
       transparent 59%,
       red 59%,
       red 67%,
-      transparent 67%);`
+      transparent 67%)`
     );
 
     expect(getStripedGradientString(set3.direction, set3.colors, set3.stops))
@@ -66,12 +72,20 @@ describe("Utils: setBgGradient", () => {
       transparent 0%,
       transparent 59%,
       yellow 59%,
-      magenta 63%,
+      magenta 61.666666666666664%,
+      green 64.33333333333333%,
       red 67%,
-      transparent 67%);`
+      transparent 67%)`
     );
 
     expect(getStripedGradientString(set4.direction, set4.colors, set4.stops))
+      .toBe(expected);
+  });
+
+  test("Should work with different directions", () => {
+    const expected = "linear-gradient(to top, green 17%, transparent 17%)";
+
+    expect(getStripedGradientString(set5.direction, set5.colors, set5.stops))
       .toBe(expected);
   });
 });

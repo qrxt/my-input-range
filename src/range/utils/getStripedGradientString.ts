@@ -16,8 +16,8 @@ export default (direction: Direction, colors: Array<string>, stopPercentages: Ar
           return `transparent 0%,
             transparent ${ firstPercentage }%,
             ${ color } ${ firstPercentage }%,
-            ${ color } ${ filteredPercentages[1] }%,
-            transparent ${ filteredPercentages[1] }%`
+            ${ color } ${ secondPercentage }%,
+            transparent ${ secondPercentage }%`
         }
 
         if (idx === 0 ) {
@@ -27,13 +27,12 @@ export default (direction: Direction, colors: Array<string>, stopPercentages: Ar
         }
 
         if (idx === colors.length - 1) {
-          return `${ color } ${ filteredPercentages[1] }%,
-            transparent ${ filteredPercentages[1] }%`
+          return `${ color } ${ secondPercentage }%,
+            transparent ${ secondPercentage }%`
         }
 
         const percentagesDifference = (secondPercentage - firstPercentage);
-        const stopsNumber = filteredPercentages.length - 1;
-        const middleColorPercentage =  percentagesDifference / (stopsNumber * idx);
+        const middleColorPercentage = percentagesDifference / (colors.length - 1) * idx;
 
         return `${ color } ${ firstPercentage + middleColorPercentage }%`;
       }
@@ -50,7 +49,5 @@ export default (direction: Direction, colors: Array<string>, stopPercentages: Ar
     })
     .join(", ");
 
-  return `
-    linear-gradient(${ direction }, ${ parts });
-  `.replace(/\s+/g, " ").trim();
+  return `linear-gradient(${ direction }, ${ parts })`.replace(/\s+/g, " ").trim();
 };
