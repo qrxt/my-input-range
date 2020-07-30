@@ -27,6 +27,9 @@ export default interface Props {
 
   //
   handleWidth?: number,
+  stepsMap?: { [key: number]: number },
+  stepsMapReversed?: { [key: number]: number },
+  stepPositions?: Array<number>
   //
 
   step?: number,

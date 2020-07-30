@@ -11,7 +11,7 @@ import view from "./view";
 
 import MyRange from "../range";
 
-export default (model: Model, range: MyRange): Signal => {
+export default (model: Model, range: MyRange, rerender = true): Signal => {
   const signal: Signal = (action: string, payload?: Payload): void => {
     model = update(model, action, payload); // mut
 
@@ -20,7 +20,9 @@ export default (model: Model, range: MyRange): Signal => {
     view(signal, model, range.node);
   };
 
-  view(signal, model, range.node);
+  if (rerender) {
+    view(signal, model, range.node);
+  }
 
   return signal;
 };

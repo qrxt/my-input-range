@@ -1,4 +1,4 @@
-import findClosestInArray from "@utils/findClosestInArray";
+import findClosestInArray from "@utils/find-closest-in-array";
 
 describe("Utils: Find Closest In Array", () => {
   const arr = Array.from(Array(10).keys());

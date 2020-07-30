@@ -73,7 +73,7 @@ module.exports = (_, options) => {
       compress: isProd,
       hot: isDev,
       port: 3000,
-      host: "192.168.1.52"
+      host: "192.168.1.60"
     },
 
     devtool: "sourcemap",

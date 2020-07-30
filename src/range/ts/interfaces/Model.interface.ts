@@ -15,6 +15,10 @@ export default interface Model {
   className?: string,
   name?: string,
 
+  steps?: { [key: number]: number }
+  stepsReversed?: { [key: number]: number },
+  stepPositions?: Array<number>,
+
   from?: number,
   to?: number | null,
   percentages?: Array<number>,
@@ -37,5 +41,5 @@ export default interface Model {
   handleWidth: number | null,
   baseWidth: number | null,
 
-  colors?: Array<string>
+  colors?: Array<string>,
 }

@@ -8,39 +8,37 @@ import div from "@elements/div";
 
 // Utils
 
-import setBgGradient from "@utils/setBgGradient";
-import getStripedGradientString from "@utils/getStripedGradientString";
+import getStripedGradientString from "@utils/get-striped-gradient";
 
-export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLElement> => {
-  const {
-    className,
-    percentages,
-    colors,
-    vertical
-  } = props;
+export default class Base {
+  props: BaseProps;
+  elem: JQuery<HTMLElement>;
+  children: JQuery<HTMLElement>
 
-  const modifiedClassName = vertical
-    ? `${ className } range__base--vertical`
-    : className;
+  constructor (props: BaseProps, children?: JQuery<HTMLElement>) {
+    this.props = props;
+    this.children = children;
 
-  // console.log(modifiedClassName);
+    const {
+      className,
+      vertical
+    } = this.props;
 
-  const base = div({
-    className: modifiedClassName
-  }, children);
+    const modifiedClassName = vertical
+      ? `${ className } range__base--vertical`
+      : className;
 
-  // Gradient on load
-  if (percentages && percentages.length) {
+    this.elem = div({
+      className: modifiedClassName
+    }, this.children);
+  }
+
+  public setGradient (colors: Array<string>, percentages: Array<number>): void {
+    const { vertical } = this.props;
+
     const direction = vertical
       ? "to top"
       : "to right";
-
-    // setBgGradient(
-    //   base,
-    //   colors,
-    //   percentages,
-    //   vertical
-    // );
 
     const gradient = getStripedGradientString(
       direction,
@@ -48,10 +46,23 @@ export default (props: BaseProps, children: JQuery<HTMLElement>): JQuery<HTMLEle
       percentages
     );
 
-    base.css({
+    this.elem.css({
       background: gradient
-    })
+    });
   }
 
-  return base;
+  init (): Base {
+    const {
+      percentages,
+      colors
+    } = this.props;
+    const hasColors = colors.length > 0;
+
+    // Gradient on load
+    if (hasColors && percentages && percentages.length) {
+      this.setGradient(colors, percentages);
+    }
+
+    return this;
+  }
 }

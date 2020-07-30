@@ -8,5 +8,5 @@ export default interface Payload {
   max?: number,
 
   handleWidth?: number,
-  baseWidth?: number
+  baseWidth?: number,
 }

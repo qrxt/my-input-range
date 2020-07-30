@@ -5,11 +5,11 @@ import Payload from "@interfaces/Payload.interface";
 
 // Utils
 
-import calcPercentage from "@utils/calcPercentage";
-import getStepIndexes from "@utils/getStepIndexes"
-import getStepPositions from "@utils/getStepPositions";
-import getStepsPosMap from "@utils/getStepsPosMap";
-import invertPercentage from "@utils/invertPercentage";
+import calcPercentage from "@utils/calc-percentage";
+import getStepIndexes from "@utils/get-step-indexes"
+import getStepPositions from "@utils/get-step-positions";
+import getStepsPosMap from "@utils/get-steps-pos-map";
+import invertPercentage from "@utils/invert-percentages";
 
 export default (model: Model, payload: Payload): Model => {
   const { handleWidth, baseWidth }: {
@@ -21,11 +21,23 @@ export default (model: Model, payload: Payload): Model => {
   const stepIndexes = getStepIndexes(min, max, step);
   const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
   const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
+  const stepsReversed = getStepsPosMap(stepIndexes, stepPositions, vertical, true);
 
   const fromPercentage = calcPercentage(
     steps[from] + handleWidth / 2,
     baseWidth
   );
+
+  const modelTemplate = {
+    ...model,
+
+    handleWidth,
+    baseWidth,
+
+    steps: steps,
+    stepsReversed: stepsReversed,
+    stepPositions: stepPositions
+  };
 
   if (typeof to === "number") {
     const toPercentage = calcPercentage(
@@ -34,25 +46,19 @@ export default (model: Model, payload: Payload): Model => {
     );
 
     return {
-      ...model,
+      ...modelTemplate,
 
       percentages: [
         invertPercentage(fromPercentage, vertical),
         invertPercentage(toPercentage, vertical)
       ],
-      handleWidth,
-      baseWidth
-    }
-  } else {
-    return {
-      ...model,
-
-      percentages: [
-        invertPercentage(fromPercentage, vertical),
-        null
-      ],
-      handleWidth,
-      baseWidth
     };
-  }
+  } else return {
+    ...modelTemplate,
+
+    percentages: [
+      invertPercentage(fromPercentage, vertical),
+      null
+    ]
+  };
 };

@@ -5,11 +5,11 @@ import Payload from "@interfaces/Payload.interface";
 
 // Utils
 
-import calcPercentage from "@utils/calcPercentage";
-import getStepIndexes from "@utils/getStepIndexes"
-import getStepPositions from "@utils/getStepPositions";
-import getStepsPosMap from "@utils/getStepsPosMap";
-import invertPercentage from "@utils/invertPercentage";
+import calcPercentage from "@utils/calc-percentage";
+import getStepIndexes from "@utils/get-step-indexes"
+import getStepPositions from "@utils/get-step-positions";
+import getStepsPosMap from "@utils/get-steps-pos-map";
+import invertPercentage from "@utils/invert-percentages";
 
 export default (model: Model, payload: Payload): Model => {
   const { from, to } = payload;

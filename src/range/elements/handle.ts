@@ -14,15 +14,9 @@ import div from "@elements/div";
 
 // Utils
 
-import calcPercentage from "@utils/calcPercentage";
-import setBgGradient from "@utils/setBgGradient";
-import getCursorDocumentOffset from "@utils/getCursorDocumentOffset";
-import findClosestInArray from "@utils/findClosestInArray";
-//
-import getStepIndexes from "@utils/getStepIndexes";
-import getStepPositions from "@utils/getStepPositions";
-import getStepsPosMap from "@utils/getStepsPosMap";
-import getStripedGradientString from "@utils/getStripedGradientString";
+import calcPercentage from "@utils/calc-percentage";
+import getCursorDocumentOffset from "@utils/get-cursor-document-offset";
+import findClosestInArray from "@utils/find-closest-in-array";
 
 const EVT_MOVE = "mousemove.range.handle touchmove.range.handle";
 const EVT_STOP = "mouseup.range.handle touchend.range.handle";
@@ -54,36 +48,33 @@ export default class Handle {
     );
   }
 
-  private _getMousePositionInside (evt: JQuery.Event): number {
-    const { vertical } = this.props;
+  private getMousePositionInside (evt: JQuery.Event): number {
+    const { vertical, base } = this.props;
 
     const cursorDocumentOffset = vertical
       ? getCursorDocumentOffset(evt, "vertical")
       : getCursorDocumentOffset(evt)
 
     return vertical
-      ? cursorDocumentOffset - this.handle.parent().offset().top
-      : cursorDocumentOffset - this.handle.parent().offset().left;
+      ? cursorDocumentOffset - base.elem.offset().top
+      : cursorDocumentOffset - base.elem.offset().left;
   }
 
-  private _onMove (evt: JQuery.Event): void {
+  private onMove (evt: JQuery.Event): void {
     const {
       handleWidth,
       baseWidth,
       vertical, percentages,
       onSlide, className,
       name, allowedMax, allowedMin,
-      min, max, step
+      stepsMapReversed, stepPositions
     } = this.props;
 
-    const stepIndexes = getStepIndexes(min, max, step);
-    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
-    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical, true);
     const closestStepCoord = findClosestInArray(
       stepPositions,
-      this._getMousePositionInside(evt) - (handleWidth / 2)
+      this.getMousePositionInside(evt) - (handleWidth / 2)
     );
-    const closestValue = steps[closestStepCoord];
+    const closestValue = stepsMapReversed[closestStepCoord];
 
     if (evt.type === "mousemove") {
       evt.preventDefault();
@@ -103,15 +94,12 @@ export default class Handle {
       : [ currentPercentage, percentages[1] ];
 
     if (isUpper(className) && closestValueMoreThanLower || closestValueLessThanUpper) {
+      const { base, colors } = this.props;
+
       this.moveTo(closestStepCoord);
 
       // Gradient on move
-      setBgGradient(
-        this.handle.parent(),
-        this.props.colors,
-        currentPercentages,
-        vertical
-      );
+      base.setGradient(colors, currentPercentages);
     }
 
     // Event on slide
@@ -124,25 +112,20 @@ export default class Handle {
     }
   }
 
-  private _onStop (): void {
+  private onStop (): void {
     const {
       signal,
-      handleWidth,
-      baseWidth,
-      vertical,
       className,
-      min, max, step
+      stepsMapReversed,
+      stepPositions
     } = this.props;
-    const stepIndexes = getStepIndexes(min, max, step);
-    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
-    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical, true);
 
     const closest = findClosestInArray(
       stepPositions,
       this.offset
     );
 
-    const valueToSet = steps[closest];
+    const valueToSet = stepsMapReversed[closest];
 
     if (isUpper(className)) {
       signal(SetValue, {
@@ -158,24 +141,24 @@ export default class Handle {
     $(document).off(EVT_STOP);
   }
 
-  private _onPress (evt: JQuery.Event): void {
+  private onPress (evt: JQuery.Event): void {
     const {
       pos,
       name,
       onPress,
     } = this.props;
-    const { _onMove, _onStop } = this;
+    const { onMove, onStop } = this;
 
     evt.stopPropagation();
 
     $(document).on(
       EVT_MOVE,
-      _onMove.bind(this)
+      onMove.bind(this)
     );
 
     $(document).on(
       EVT_STOP,
-      _onStop.bind(this)
+      onStop.bind(this)
     );
 
     // Event on press
@@ -184,24 +167,20 @@ export default class Handle {
     }
   }
 
-  private _onPageReady (): void {
+  private onPageReady (): void {
     const {
       signal,
       pos,
       baseWidth,
-      handleWidth,
-      vertical,
       onLoad,
       name,
-      min, max, step
+      stepsMap
     } = this.props;
-    const stepIndexes = getStepIndexes(min, max, step);
-    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
-    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
-    const currentStepCoord = steps[pos];
 
     if (!baseWidth) {
-      this.moveTo(currentStepCoord);
+      if (stepsMap) {
+        this.moveTo(stepsMap[pos]);
+      }
 
       signal(Init, {
         handleWidth: this.handleWidth,
@@ -214,11 +193,11 @@ export default class Handle {
     }
   }
 
-  private _onDragStart (): boolean {
+  private onDragStart (): boolean {
     return false;
   }
 
-  private _onKeyDown (evt: JQuery.Event): void {
+  private onKeyDown (evt: JQuery.Event): void {
     // console.log(evt.key);
   }
 
@@ -231,11 +210,11 @@ export default class Handle {
   }
 
   private get baseWidth (): number {
-    const { vertical } = this.props;
+    const { vertical, base } = this.props;
 
     return vertical
-      ? this.handle.parent().height()
-      : this.handle.parent().width();
+      ? base.elem.height()
+      : base.elem.width();
   }
 
   private get handleWidth (): number {
@@ -259,13 +238,12 @@ export default class Handle {
       pos,
       onDraw,
       name,
-      min, max, step, baseWidth, handleWidth, vertical
+      stepsMap
     } = this.props;
-    const stepIndexes = getStepIndexes(min, max, step);
-    const stepPositions = getStepPositions(baseWidth, handleWidth, stepIndexes);
-    const steps = getStepsPosMap(stepIndexes, stepPositions, vertical);
 
-    this.moveTo(steps[pos])
+    if (stepsMap) {
+      this.moveTo(stepsMap[pos]);
+    }
 
     // Event on load
     if (onDraw) {
@@ -277,29 +255,29 @@ export default class Handle {
 
   init (): JQuery<HTMLElement> {
     const {
-      _onPageReady,
-      _onDragStart,
-      _onPress,
-      _onKeyDown
+      onPageReady,
+      onDragStart,
+      onPress,
+      onKeyDown
     } = this;
 
     this._preinit();
 
-    $(document).ready(_onPageReady.bind(this));
+    $(document).ready(onPageReady.bind(this));
 
     this.handle.on(
       EVT_DRAGSTART,
-      _onDragStart.bind(this)
+      onDragStart.bind(this)
     );
 
     this.handle.on(
       EVT_START,
-      _onPress.bind(this)
+      onPress.bind(this)
     );
 
     this.handle.on(
       EVT_KEYDOWN,
-      _onKeyDown.bind(this)
+      onKeyDown.bind(this)
     );
 
     return this.handle;

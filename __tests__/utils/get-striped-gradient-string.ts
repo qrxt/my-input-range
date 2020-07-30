@@ -1,4 +1,4 @@
-import getStripedGradientString from "@utils/getStripedGradientString";
+import getStripedGradientString from "@utils/get-striped-gradient";
 // Types
 
 import Direction from "@type/Direction.type";

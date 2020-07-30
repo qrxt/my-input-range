@@ -1,7 +1,3 @@
-// Types
-
-// import Orientaion from "@type/Orientation";
-
 export default (evt: JQuery.Event, orientation = "horizontal"): number => {
   const isMouseEvt = evt.type === "mousemove";
   const isTouchEvt = evt.type === "touchmove";
