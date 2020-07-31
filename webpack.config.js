@@ -111,7 +111,8 @@ module.exports = (_, options) => {
       new webpack.ProvidePlugin({
         $: "jquery",
         jQuery: "jquery",
-        "window.jQuery": "jquery"
+        "window.jQuery": "jquery",
+        ResizeObserver: "resize-observer-polyfill"
       })
     ]
   };

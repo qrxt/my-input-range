@@ -18,6 +18,8 @@ import calcPercentage from "@utils/calc-percentage";
 import getCursorDocumentOffset from "@utils/get-cursor-document-offset";
 import findClosestInArray from "@utils/find-closest-in-array";
 
+import * as $ from "jquery";
+
 const EVT_MOVE = "mousemove.range.handle touchmove.range.handle";
 const EVT_STOP = "mouseup.range.handle touchend.range.handle";
 const EVT_START = "mousedown.range.handle touchstart.range.handle";

@@ -56,10 +56,9 @@ export default class Base {
       percentages,
       colors
     } = this.props;
-    const hasColors = colors.length > 0;
 
     // Gradient on load
-    if (hasColors && percentages && percentages.length) {
+    if (percentages && percentages.length) {
       this.setGradient(colors, percentages);
     }
 

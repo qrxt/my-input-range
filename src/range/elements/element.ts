@@ -6,6 +6,8 @@ import Props from "@interfaces/Props.interface";
 
 import Children from "@type/Children.type";
 
+import * as $ from "jquery";
+
 export default
   (tagName: string, props: Props, children: Children): JQuery<HTMLElement> => {
     const {

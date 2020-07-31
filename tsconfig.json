@@ -9,6 +9,7 @@
     "lib": ["es2016", "dom", "es5"],
     "noEmitOnError": true,
     "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@interfaces/*": ["./src/range/ts/interfaces/*"],
       "@type/*": ["src/range/ts/type/*"],
