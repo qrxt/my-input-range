@@ -17,24 +17,30 @@ const { SetValue } = ActionsEnum;
 
 import { mount } from "./elmish";
 
-const normalize = (options: Options): Options => {
+// Utils
+
+import normalizeValue from "@utils/normalize-value";
+
+const normalizeConstructData = (options: Options): Options => {
   const {
     min,
     max,
     step,
-    from
+    from,
+    to
   } = options;
 
-  const stepsSum = Math.abs(min) + Math.abs(max);
-  const isValueOutOfBounds = (from < min || from > max);
+  const normalizedMax = max < min ? min + step : max
+  const stepsSum = Math.abs(min) + Math.abs(normalizedMax);
   const isStepTooBig = step > stepsSum;
 
   return {
     ...options,
 
-    max: max < min ? min + step : max,
+    max: normalizedMax,
     step: isStepTooBig ? stepsSum : step,
-    from: isValueOutOfBounds ? Math.round(stepsSum / 2) : from,
+    from: from ? normalizeValue(min, max, from) : null,
+    to: to ? normalizeValue(min, max, to) : null
   };
 };
 
@@ -48,7 +54,7 @@ export default class MyRange {
     this.node = node;
     this.signal = null;
     this.range = this.node.find("input[type='range']");
-    this.options = normalize({
+    this.options = normalizeConstructData({
       className: null,
       name: "range-nameless",
 
@@ -76,41 +82,54 @@ export default class MyRange {
     });
   }
 
-  get value (): number {
-    return this.options.from;
-  }
+  public get (): Array<number> {
+    const { from, to } = this.options;
 
-  set value (val: number) {
-    this.options.from = val;
+    return [ from, to ];
   }
 
   public set (handle: "lower" | "upper", val: number): void {
-    const { from, to } = this.options;
+    const { from, to, min, max } = this.options;
 
     const isRange = typeof to === "number";
 
-    if (isRange) {
-      if (handle === "lower") {
-        const fixedFrom = val <= to
-          ? val
-          : to;
+    const setUpper = (val: number): void => {
+      const fixedTo = normalizeValue(from, this.options.max, val);
+
+      this.options.to = fixedTo;
+
+      this.signal(SetValue, {
+        to: fixedTo
+      });
+    };
+
+
+
+    const setLower = (val: number): void => {
+      if (isRange) {
+        const fixedFrom = normalizeValue(min, to, val);
+
+        this.options.from = fixedFrom;
 
         this.signal(SetValue, {
           from: fixedFrom
         });
-      } else if (handle === "upper") {
-        const fixedTo = val >= from
-          ? val
-          : from;
+      } else {
+        const fixedFrom = normalizeValue(min, max, val)
+        this.options.from = fixedFrom;
 
         this.signal(SetValue, {
-          to: fixedTo
+          from: fixedFrom
         });
       }
-    } else {
-      this.signal(SetValue, {
-        from: val
-      });
+    };
+
+    if (handle === "lower") {
+      setLower(val);
+    }
+
+    if (handle === "upper") {
+      setUpper(val);
     }
   }
 

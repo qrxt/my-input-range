@@ -64,7 +64,10 @@ module.exports = (_, options) => {
         "@enums": path.resolve(__dirname, "src", "range", "ts", "enums"),
 
         "@elements": path.resolve(__dirname, "src", "range", "elements"),
-        "@utils": path.resolve(__dirname, "src", "range", "utils")
+        "@utils": path.resolve(__dirname, "src", "range", "utils"),
+
+        "@tests": path.resolve(__dirname, "__tests__"),
+        "@mocks": path.resolve(__dirname, "__mocks__")
       }
     },
 

@@ -6,17 +6,20 @@
     "target": "es5",
     "module": "es2015",
     "moduleResolution": "node",
-    "lib": ["es2016", "dom", "es5"],
+    "lib": [ "es2016", "dom", "es5" ],
     "noEmitOnError": true,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@interfaces/*": ["./src/range/ts/interfaces/*"],
-      "@type/*": ["src/range/ts/type/*"],
-      "@enums/*": ["./src/range/ts/enums/*"],
+      "@interfaces/*": [ "./src/range/ts/interfaces/*" ],
+      "@type/*": [ "src/range/ts/type/*" ],
+      "@enums/*": [ "./src/range/ts/enums/*" ],
 
-      "@elements/*": ["./src/range/elements/*"],
-      "@utils/*": ["./src/range/utils/*"],
+      "@elements/*": [ "./src/range/elements/*" ],
+      "@utils/*": [ "./src/range/utils/*" ],
+
+      "@tests/*": [ "./__tests__" ],
+      "@mocks/*": [ "./__mocks__" ],
     }
   },
   "include": [
@@ -24,6 +27,7 @@
     "./src/index.ts",
     "./webpack.config.js",
     "./jest.config.js",
-    "__tests__/**/*"
+    "__tests__/**/*",
+    "__mocks__/**/*"
   ],
 }

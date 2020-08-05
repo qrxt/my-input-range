@@ -8,7 +8,7 @@ import Props from "@interfaces/Props.interface";
 
 import ActionsEnum from "@enums/ActionsEnum.enums";
 
-const { SetBaseWidth, Init } = ActionsEnum;
+const { Init } = ActionsEnum;
 
 // Elements
 
@@ -33,29 +33,31 @@ export default (props: Props, children: JQuery<HTMLElement>): JQuery<HTMLElement
     className: modifiedClassname
   }, children);
 
-  const observer: ResizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
-      const afterResizeWidth = vertical
-        ? entry.contentRect.height
-        : entry.contentRect.width
-      const isRendered = afterResizeWidth !== 0;
-      const threshold = 3;
-      const widthsSub = Math.abs(width - afterResizeWidth);
-      if (width && isRendered && widthsSub > threshold) {
-        // Event on resize
-        if (onResize) {
-          onResize(entry.contentRect, name);
+  if (ResizeObserver) {
+    const observer: ResizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const afterResizeWidth = vertical
+          ? entry.contentRect.height
+          : entry.contentRect.width
+        const isRendered = afterResizeWidth !== 0;
+        const threshold = 3;
+        const widthsSub = Math.abs(width - afterResizeWidth);
+        if (width && isRendered && widthsSub > threshold) {
+          // Event on resize
+          if (onResize) {
+            onResize(entry.contentRect, name);
+          }
+
+          signal(Init, {
+            handleWidth: handleWidth,
+            baseWidth: afterResizeWidth
+          })
         }
-
-        signal(Init, {
-          handleWidth: handleWidth,
-          baseWidth: afterResizeWidth
-        })
       }
-    }
-  });
+    });
 
-  observer.observe(range.get(0));
+    observer.observe(range.get(0));
+  }
 
   return range;
 }
