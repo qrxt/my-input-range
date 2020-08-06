@@ -8,4 +8,4 @@ importAll(
 
 importAll(
   require.context("raw-loader!./", false, /\.html$/u)
-);
+)

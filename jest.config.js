@@ -1,9 +1,12 @@
 module.exports = {
-  preset: "jest-puppeteer",
+  preset: "ts-jest", //"jest-puppeteer",
+  coveragePathIgnorePatterns: [
+    "src/range/elements"
+  ],
   // testMatch: ["**/?(*.)+(spec|test).[t]s"],
-  transform: {
-		"^.+\\.ts?$": "ts-jest"
-	},
+  // transform: {
+	// 	"^.+\\.ts?$": "ts-jest"
+	// },
   "moduleNameMapper": {
     "^@interfaces/(.*)$": "<rootDir>/src/range/ts/interfaces/$1",
     "^@type/(.*)$": "<rootDir>/src/range/ts/type/$1",
